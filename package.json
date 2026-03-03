@@ -1,7 +1,7 @@
 {
-	"name": "@alessiofrittoli/react-node-module-starter",
-	"version": "1.0.1",
-	"description": "Starter repository for developing React node_modules",
+	"name": "@alessiofrittoli/react-media-player",
+	"version": "0.1.0",
+	"description": "Handle media players with ease",
 	"author": {
 		"name": "Alessio Frittoli",
 		"email": "info@alessiofrittoli.it",
@@ -15,19 +15,20 @@
 		}
 	],
 	"keywords": [
-		"nodejs",
-		"npm",
 		"react",
-		"node_modules"
+		"media-player",
+		"audio-player",
+		"video-player",
+		"media-session"
 	],
-	"homepage": "https://github.com/alessiofrittoli/react-node-module-starter#readme",
+	"homepage": "https://github.com/alessiofrittoli/react-media-player#readme",
 	"bugs": {
-		"url": "https://github.com/alessiofrittoli/react-node-module-starter/issues",
+		"url": "https://github.com/alessiofrittoli/react-media-player/issues",
 		"email": "info@alessiofrittoli.it"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/alessiofrittoli/react-node-module-starter.git"
+		"url": "git+https://github.com/alessiofrittoli/react-media-player.git"
 	},
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
@@ -40,25 +41,17 @@
 			"types": "./dist/index.d.mts",
 			"default": "./dist/index.mjs"
 		},
+		"./*": {
+			"types": "./dist/*/index.d.mts",
+			"default": "./dist/*/index.mjs"
+		},
 		"./client": {
-			"types": "./dist/client.d.mts",
-			"default": "./dist/client.mjs"
+			"types": "./dist/client/index.d.mts",
+			"default": "./dist/client/index.mjs"
 		},
-		"./components/*": {
-			"types": "./dist/components/*/index.d.mts",
-			"default": "./dist/components/*/index.mjs"
-		},
-		"./components/*/*": {
-			"types": "./dist/components/*/*.d.mts",
-			"default": "./dist/components/*/*.mjs"
-		},
-		"./hooks/*": {
-			"types": "./dist/hooks/*.d.mts",
-			"default": "./dist/hooks/*.mjs"
-		},
-		"./hooks/*/*": {
-			"types": "./dist/hooks/*/*.d.mts",
-			"default": "./dist/hooks/*/*.mjs"
+		"./client/*": {
+			"types": "./dist/client/*/index.d.mts",
+			"default": "./dist/client/*/index.mjs"
 		}
 	},
 	"sideEffects": false,

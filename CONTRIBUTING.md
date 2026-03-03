@@ -1,4 +1,4 @@
-# Contributing to React Node Module Starter ✇
+# Contributing to React Media Player 🎥
 
 We’re excited that you’re interested in contributing to React Node Module Starter! This guide will help you get started.
 
@@ -8,7 +8,7 @@ We’re excited that you’re interested in contributing to React Node Module St
 
 If you find a bug, have a question, or want to suggest a new feature:
 
-- Search Existing Issues: Check the [Issues](https://github.com/alessiofrittoli/react-node-module-starter/issues) tab to see if your concern has already been addressed.
+- Search Existing Issues: Check the [Issues](https://github.com/alessiofrittoli/react-media-player/issues) tab to see if your concern has already been addressed.
 - Create a New Issue: If not, open a new issue. Please provide:
   - A clear and descriptive title.
   - Detailed steps to reproduce the issue (if applicable).
@@ -18,12 +18,12 @@ If you find a bug, have a question, or want to suggest a new feature:
 
 Please, take a look at [Contributing to a project - GitHub Docs](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) page for more in-detail informations.
 
-- Go to the [repository page](https://github.com/alessiofrittoli/react-node-module-starter).
+- Go to the [repository page](https://github.com/alessiofrittoli/react-media-player).
 - Click the Fork button.
 - Clone your fork to your local machine:
 
 ```bash
-git clone https://github.com/your-username/react-node-module-starter.git
+git clone https://github.com/your-username/react-media-player.git
 ```
 
 ### 3. Create a Branch
@@ -33,7 +33,7 @@ To make changes:
 - Navigate to your cloned repository:
 
 ```bash
-cd react-node-module-starter  
+cd react-media-player
 ```
 
 - Create and switch to a new branch:
@@ -63,7 +63,7 @@ git add .
 - Write a meaningful commit message:
 
 ```bash
-git commit -m "Add feature/bug-fix description"  
+git commit -m "Add feature/bug-fix description"
 ```
 
 ### 6. Push to Your Fork
@@ -71,7 +71,7 @@ git commit -m "Add feature/bug-fix description"
 Push your branch to your forked repository:
 
 ```bash
-git push origin feature/your-feature-name  
+git push origin feature/your-feature-name
 ```
 
 ### 7. Submit a Pull Request

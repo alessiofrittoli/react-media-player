@@ -1,36 +1,36 @@
-<h1 align="center">React Node Module Starter ✇</h1>
+<h1 align="center">React Media Player 🎥</h1>
 <p align="center">
-  Starter repository for developing React node_modules
+  Handle media players with ease
 </p>
 <p align="center">
-  <a href="https://npmjs.org/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://img.shields.io/npm/v/@alessiofrittoli/react-node-module-starter" alt="Latest version"/>
+  <a href="https://npmjs.org/package/@alessiofrittoli/react-media-player">
+    <img src="https://img.shields.io/npm/v/@alessiofrittoli/react-media-player" alt="Latest version"/>
   </a>
-  <a href="https://coveralls.io/github/alessiofrittoli/react-node-module-starter">
-    <img src="https://coveralls.io/repos/github/alessiofrittoli/react-node-module-starter/badge.svg" alt="Test coverage"/>
+  <a href="https://coveralls.io/github/alessiofrittoli/react-media-player">
+    <img src="https://coveralls.io/repos/github/alessiofrittoli/react-media-player/badge.svg" alt="Test coverage"/>
   </a>
-  <a href="https://socket.dev/npm/package/@alessiofrittoli/react-node-module-starter/overview">
-    <img src="https://socket.dev/api/badge/npm/package/@alessiofrittoli/react-node-module-starter" alt="Socket Security score"/>
+  <a href="https://socket.dev/npm/package/@alessiofrittoli/react-media-player/overview">
+    <img src="https://socket.dev/api/badge/npm/package/@alessiofrittoli/react-media-player" alt="Socket Security score"/>
   </a>
-  <a href="https://npmjs.org/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://img.shields.io/npm/dm/@alessiofrittoli/react-node-module-starter.svg" alt="npm downloads"/>
+  <a href="https://npmjs.org/package/@alessiofrittoli/react-media-player">
+    <img src="https://img.shields.io/npm/dm/@alessiofrittoli/react-media-player.svg" alt="npm downloads"/>
   </a>
-  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://badgen.net/bundlephobia/dependency-count/@alessiofrittoli/react-node-module-starter" alt="Dependencies"/>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-media-player">
+    <img src="https://badgen.net/bundlephobia/dependency-count/@alessiofrittoli/react-media-player" alt="Dependencies"/>
   </a>
-  <a href="https://libraries.io/npm/%40alessiofrittoli%2Freact-node-module-starter">
-    <img src="https://img.shields.io/librariesio/release/npm/@alessiofrittoli/react-node-module-starter" alt="Dependencies status"/>
+  <a href="https://libraries.io/npm/%40alessiofrittoli%2Freact-media-player">
+    <img src="https://img.shields.io/librariesio/release/npm/@alessiofrittoli/react-media-player" alt="Dependencies status"/>
   </a>
 </p>
 <p align="center">
-  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://badgen.net/bundlephobia/min/@alessiofrittoli/react-node-module-starter" alt="minified"/>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-media-player">
+    <img src="https://badgen.net/bundlephobia/min/@alessiofrittoli/react-media-player" alt="minified"/>
   </a>
-  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://badgen.net/bundlephobia/minzip/@alessiofrittoli/react-node-module-starter" alt="minizipped"/>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-media-player">
+    <img src="https://badgen.net/bundlephobia/minzip/@alessiofrittoli/react-media-player" alt="minizipped"/>
   </a>
-  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-node-module-starter">
-    <img src="https://badgen.net/bundlephobia/tree-shaking/@alessiofrittoli/react-node-module-starter" alt="Tree shakable"/>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-media-player">
+    <img src="https://badgen.net/bundlephobia/tree-shaking/@alessiofrittoli/react-media-player" alt="Tree shakable"/>
   </a>
 </p>
 <p align="center">
@@ -59,163 +59,18 @@
 
 ---
 
-### Getting started (delete once cloned in your project)
+### Getting started
 
-Run the following command to start using `react-node-module-starter` for your projects:
-
-```bash
-git clone git@github.com:alessiofrittoli/react-node-module-starter.git && git remote remove origin
-```
-
-install dependencies
+Run the following command to start using `react-media-player` in your projects:
 
 ```bash
-pnpm i
-```
-
-Read the [Creating a repository from a template - GitHub Docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) for more in-detail informations about creating a new Repository from a template using GitHub web interface.
-
-#### Pre-configured exports
-
-##### React Components
-
-- in order to quickly export React Components from this library with no configuration you need to follow this structure
-
-```css
-library
-├── src
-│   ├── components
-│   │   ├── MyComponent
-│   │   │   ├── MySubComponent
-│   │   │   │   └── index.tsx
-│   │   │   └── index.tsx
-│   │   │
-│   │   └── MyOtherComponent
-│   │       └── index.tsx
-│   │
-```
-
-- then import them like so:
-
-```ts
-import { MyComponent } from "library/components/MyComponent";
-import { MySubComponent } from "library/components/MyComponent/MySubComponent";
-import { MyOtherComponent } from "library/components/MyOtherComponent";
-```
-
-> [!WARNING]
-> Please note that there is no limit about nested folders.
-
----
-
-##### React Hooks
-
-- in order to quickly export React Components from this library with no configuration you need to follow this structure
-
-```css
-library
-├── src
-│   ├── components
-│   │   └── ...
-│   │
-│   ├── hooks
-│   │   ├── nested-folder
-│   │   │   ├── useSomeGroupedHook.ts
-│   │   │   └── useAnotherGroupedHook.ts
-│   │   │
-│   │   ├── useSomeHook.ts
-│   │   └── useSomeOtherHook.ts
-│   │
-```
-
-- then import them like so
-
-```ts
-import { useSomeHook } from "library/hooks/useSomeHook";
-import { useSomeOtherHook } from "library/hooks/useSomeOtherHook";
-import { useSomeGroupedHook } from "library/hooks/nested-folder/useSomeOtherHook";
-import { useAnotherGroupedHook } from "library/hooks/nested-folder/useAnotherGroupedHook";
-```
-
-> [!WARNING]
-> Please note that there is no limit about nested folders.
-
----
-
-##### React Context API
-
-The `store` folder has no quick configured export configuration but we suggest to follow the documented workflow below in order to achieve the quickiest configuration.
-
-- create your Context API following this folder structure
-
-```css
-library
-├── src
-│   ├── components
-│   │   └── ...
-│   │
-│   ├── hooks
-│   │   └── ...
-│   │
-│   ├── store
-│   │   ├── MyStore
-│   │   │   ├── MyStoreContext.ts
-│   │   │   ├── MyStoreProvider.tsx
-│   │   │   └── useMyStore.ts
-│   │   │
-│   │   └── AnotherStore
-│   │       ├── AnotherStoreContext.ts
-│   │       ├── AnotherStoreProvider.tsx
-│   │       └── useAnotherStore.ts
-│   │
-```
-
-- update the `exports` in the `package.json` like so (this need to be updated whenever a new store is added)
-
-```json
-{
-  ...
-  "exports": {
-    ...
-    "./store/MyStore/*": {
-      "types": "./dist/store/MyStore/*.d.mts",
-      "default": "./dist/store/MyStore/*.mjs"
-    },
-    "./store/AnotherStore/*": {
-      "types": "./dist/store/AnotherStore/*.d.mts",
-      "default": "./dist/store/AnotherStore/*.mjs"
-    }
-  }
-  ...
-}
-```
-
-- then import them like so
-
-```ts
-import { myStoreContext } from "library/store/MyStore/MyStoreContext";
-import { MyStoreProvider } from "library/store/MyStore/MyStoreProvider";
-import { useMyStore } from "library/store/MyStore/useMyStore";
-
-import { anotherStoreContext } from "library/store/AnotherStore/AnotherStoreContext";
-import { AnotherStoreProvider } from "library/store/AnotherStore/AnotherStoreProvider";
-import { useAnotherStore } from "library/store/AnotherStore/useAnotherStore";
-```
-
----
-
-### Getting started (customize based on your project needs)
-
-Run the following command to start using `{package_name}` in your projects:
-
-```bash
-npm i {package_name}
+npm i @alessiofrittoli/react-media-player
 ```
 
 or using `pnpm`
 
 ```bash
-pnpm i {package_name}
+pnpm i @alessiofrittoli/react-media-player
 ```
 
 ---

@@ -2,7 +2,7 @@
 	"configurations": [
 		{
 			"type": "node",
-			"name": "vscode-jest-tests.v2.react-node-module-starter",
+			"name": "vscode-jest-tests.v2.react-media-player",
 			"request": "launch",
 			"args": [
 				"test",

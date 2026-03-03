@@ -1,0 +1,17 @@
+{
+	"workbench.colorCustomizations": {
+		"titleBar.activeBackground": "#212121",
+		"titleBar.border": "#58C4DC",
+		"titleBar.activeForeground": "#F0F0F0",
+		"statusBar.background": "#212121",
+		"statusBar.border":"#58C4DC",
+		"statusBar.foreground": "#F0F0F0",
+		"activityBar.activeBorder": "#58C4DC",
+		"activityBarBadge.foreground":"#212121",
+		"activityBarBadge.background":"#58C4DC",
+	},
+	"editor.formatOnSave": true,
+	"[markdown]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+}

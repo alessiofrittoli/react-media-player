@@ -1,14 +1,22 @@
 import { renderHook, act } from '@testing-library/react'
+import { useEventListener as _useEventListener } from '@alessiofrittoli/react-hooks'
 import { addItemsUUID } from '@alessiofrittoli/react-hooks/queue/utils'
 import type { UUID } from '@alessiofrittoli/react-hooks/queue'
 import {
 	playMedia as _playMedia,
-	pauseMedia as _pauseMedia,
+	type pauseMedia as _pauseMedia,
 	updatePositionState as _updatePositionState,
 } from '@alessiofrittoli/media-utils'
 
-import { PlayerState, useMediaPlayerController } from '@/hooks/useMediaPlayerController'
+import { PlayerState, UseMediaPlayerController, useMediaPlayerController, UseMediaPlayerControllerOptions } from '@/hooks/useMediaPlayerController'
 import type { Media, Queue } from '@/types'
+import { Tween } from '@alessiofrittoli/math-utils'
+
+
+jest.mock( '@alessiofrittoli/react-hooks', () => ( {
+	...jest.requireActual( '@alessiofrittoli/react-hooks' ),
+	useEventListener: jest.fn<ReturnType<typeof _useEventListener>, Parameters<typeof _useEventListener>>(),
+} ) )
 
 
 jest.mock( '@alessiofrittoli/media-utils', () => ( {
@@ -22,8 +30,8 @@ jest.mock( '@alessiofrittoli/media-utils', () => ( {
 } ) )
 
 
+const useEventListener		= _useEventListener as unknown as jest.Mock<ReturnType<typeof _useEventListener>, Parameters<typeof _useEventListener>>
 const playMedia				= _playMedia as jest.Mock<ReturnType<typeof _playMedia>, Parameters<typeof _playMedia>>
-// const pauseMedia			= _pauseMedia as jest.Mock<ReturnType<typeof _pauseMedia>, Parameters<typeof _pauseMedia>>
 const updatePositionState	= _updatePositionState as jest.Mock<ReturnType<typeof _updatePositionState>, Parameters<typeof _updatePositionState>>
 
 
@@ -595,6 +603,225 @@ describe( 'useMediaPlayerController', () => {
 
 			expect( result.current.state ).toBe( PlayerState.PLAYING )
 			expect( result.current.current ).toBe( queue.items.at( 2 ) )
+
+		} )
+
+	} )
+
+
+	describe( 'media timeupdate', () => {
+
+		it( 'fades out current media then plays the next one', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia } )
+			) )
+	
+	
+			act( () => {
+				result.current.playPause()
+			} )
+
+			expect( result.current.current ).toBe( queue.items.at( 0 ) )
+			
+			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration / 2
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( result.current.current ).toBe( queue.items.at( 0 ) )
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration - ( Tween.Duration / 1000 )
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( result.current.current ).toBe( queue.items.at( 1 ) )
+
+		} )
+
+
+		it( 'pauses media player if next media fail to load', () => {
+
+			const onPlaybackError = jest.fn()
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia, onPlaybackError } )
+			) )
+
+			act( () => {
+				result.current.playPause()
+			} )
+
+			const mediaError = {} as MediaError
+
+			playMedia
+				.mockImplementationOnce( async ( { onError } ) => onError?.( mediaError ) )
+
+			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration - ( Tween.Duration / 1000 )
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( onPlaybackError ).toHaveBeenCalledWith( mediaError )
+
+		} )
+
+
+		it( 'stops media player if there is no next queued media to play', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia, repeat: false } )
+			) )
+
+			act( () => {
+				result.current.playPause( { uuid: queue.items.at( -1 )?.uuid } )
+			} )
+
+			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration - ( Tween.Duration / 1000 )
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.STOPPED )
+
+		} )
+		
+		
+		it( 'does nothing if no media has been given', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue } )
+			) )
+
+			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration - ( Tween.Duration / 1000 )
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.STOPPED )
+
+		} )
+		
+		
+		it( 'does nothing if media player was not playing', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia } )
+			) )
+
+			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+
+			act( () => {
+				mockMedia.currentTime = mockMedia.duration - ( Tween.Duration / 1000 )
+				listener?.( new Event( 'timeupdate' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.STOPPED )
+
+		} )
+
+	} )
+
+
+	describe( 'media end', () => {
+
+		it( 'plays next media when current media ends', () => {
+	
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia } )
+			) )
+	
+	
+			act( () => {
+				result.current.playPause()
+			} )
+	
+			const { listener } = useEventListener.mock.calls.at( -1 )?.[ 1 ] || {}
+	
+			act( () => {
+				listener?.( new Event( 'ended' ) )
+			} )
+	
+			expect( result.current.current ).toBe( queue.items.at( 1 ) )
+	
+		} )
+		
+		
+		it( 'stops media player when last media ends and repeat has been set to false', () => {
+	
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia, repeat: false } )
+			) )
+	
+	
+			act( () => {
+				result.current.playPause( { uuid: queue.items.at( -1 )?.uuid } )
+			} )
+	
+			const { listener } = useEventListener.mock.calls.at( -1 )?.[ 1 ] || {}
+	
+			act( () => {
+				listener?.( new Event( 'ended' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.STOPPED )
+	
+		} )
+
+	} )
+
+
+	describe( 'initial media', () => {
+
+		it( 'loads the given initial media and sets it as current', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia, initialMedia: queue.items.at( 1 ) } )
+			) )
+
+			expect( mockMedia.load ).toHaveBeenCalled()
+			expect( result.current.current ).toBe( queue.items.at( 1 ) )
+
+		} )
+
+
+		it( 'optionally sets media currentTime if given', () => {
+
+			renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia, initialMedia: {
+					...queue.items.at( 1 )!, time: 10,
+				} } )
+			) )
+
+			expect( mockMedia.currentTime ).toBe( 10 )
+
+		} )
+		
+		
+		it( 'does nothing if initial media reference changes and an initial media has been already loaded', () => {
+
+			const { result, rerender } = renderHook<UseMediaPlayerController<Queue>, Partial<UseMediaPlayerControllerOptions<Queue>>>(
+				options => (
+					useMediaPlayerController( { queue, media: mockMedia, initialMedia: queue.items.at( 1 ), ...options } )
+				)
+			)
+
+			
+			act( () => {
+				rerender( { initialMedia: queue.items.at( 2 ) } )
+			} )
+
+
+			expect( result.current.current ).toBe( queue.items.at( 1 ) )
 
 		} )
 

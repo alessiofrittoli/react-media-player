@@ -50,10 +50,10 @@ export type Queue<T extends Media = Media> = GlobalQueue<T>
 
 
 /**
- * Defines a bookmarked item to restore from the queue.
+ * Defines the initial queue media to load.
  * 
  */
-export type Bookmark<T extends Media = Media> = QueuedMedia<T> &
+export type InitialMedia<T extends Media = Media> = QueuedMedia<T> &
 {
 	/**
 	 * Defines the bookmarked media time.

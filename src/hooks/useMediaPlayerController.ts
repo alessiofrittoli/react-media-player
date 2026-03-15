@@ -1,13 +1,13 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Url } from '@alessiofrittoli/url-utils'
 import { Tween } from '@alessiofrittoli/math-utils'
-import { useEventListener, useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
 import { useQueue } from '@alessiofrittoli/react-hooks/queue'
-import type { UseQueue, NewQueue, QueuedItemType, UUID } from '@alessiofrittoli/react-hooks/queue'
+import type { UseQueue, NewQueue, QueuedItemType, UUID, UseQueueOptions } from '@alessiofrittoli/react-hooks/queue'
 import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/media-utils'
 
 import type { UseVolume } from '@/hooks/useVolume'
-import type { Queue, Bookmark } from '@/types'
+import type { Queue, InitialMedia } from '@/types'
 
 /**
  * The media player state.
@@ -117,7 +117,8 @@ export type PlaybackErrorHandler = ( error: MediaError ) => void
  * 
  */
 export interface UseMediaPlayerControllerOptions<T extends Queue>
-	extends Partial<Pick<UseVolume, 'volumeRef'>>
+	extends Partial<Pick<UseVolume, 'volumeRef'>>,
+	Pick<UseQueueOptions, 'repeat'>
 {
 	/**
 	 * The HTMLMediaElement.
@@ -130,10 +131,10 @@ export interface UseMediaPlayerControllerOptions<T extends Queue>
 	 */
 	queue: T
 	/**
-	 * Defines a bookmarked item to restore from the queue.
+	 * Defines the initial queue media to load.
 	 * 
 	 */
-	bookmark?: Bookmark<QueuedItemType<T>>
+	initialMedia?: InitialMedia<QueuedItemType<T>>
 	/**
 	 * Indicates time in milliseconds after that the media restart to `0` rather than playing the previous one.
 	 * 
@@ -226,8 +227,8 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 ): UseMediaPlayerController<T> => {
 
 	const {
-		media, queue: initialQueue, volumeRef, bookmark,
-		restartThreshold = 5000, playPauseFadeDuration, onMediaChange, onPlaybackError,
+		media, queue: initialQueue, volumeRef, initialMedia,
+		restartThreshold = 5000, playPauseFadeDuration, repeat, onMediaChange, onPlaybackError,
 	} = options
 
 
@@ -236,7 +237,8 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 		previous: prevInQueue, next: nextInQueue, ...queueController
 	} = useQueue( {
 		queue	: initialQueue,
-		current	: bookmark,
+		current	: initialMedia,
+		repeat	: repeat,
 	} )
 
 	const initialLoadedRef = useRef( false )
@@ -449,15 +451,10 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			
 			pauseMedia( { media, fade: fadeDuration, onEnd() {
 
-				const volume = volumeRef?.current ?? 1
-				
-				if ( ! hasNext ) {
-					return stop()
-				}
+				const volume	= volumeRef?.current ?? 1
+				const data		= nextInQueue()
 
-				const data = nextInQueue()
-
-				if ( ! data ) {
+				if ( ! hasNext || ! data ) {
 					return stop()
 				}
 
@@ -496,27 +493,27 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 
 	/**
-	 * Load initial bookmarked media.
+	 * Load initial media.
 	 * 
 	 */
-	useUpdateEffect( () => {
+	useEffect( () => {
 
 		if ( ! media ) return
-		if ( ! bookmark ) return
+		if ( ! initialMedia ) return
 		if ( initialLoadedRef.current ) return
 
 		// eslint-disable-next-line react-hooks/immutability
-		media.src = Url.format( bookmark.src )
+		media.src = Url.format( initialMedia.src )
 
-		if ( bookmark?.time ) {
-			media.currentTime = bookmark.time
+		if ( initialMedia?.time ) {
+			media.currentTime = initialMedia.time
 		}
 
 		media.load()
 
 		initialLoadedRef.current = true
 
-	}, [ media, bookmark ] )
+	}, [ media, initialMedia ] )
 
 
 	return {

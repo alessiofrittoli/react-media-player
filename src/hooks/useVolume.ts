@@ -21,7 +21,7 @@ export type ToggleMuteHandler = () => number
 
 
 /**
- * Configuration options for the useVolume hook.
+ * Configuration options for the `useVolume` hook.
  * 
  */
 export interface UseVolumeOptions

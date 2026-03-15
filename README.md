@@ -37,9 +37,6 @@
   <a href="https://github.com/sponsors/alessiofrittoli">
     <img src="https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2" alt="Fund this package"/>
   </a>
-  <a href="https://github.com/sponsors/alessiofrittoli">
-    <img src="https://img.shields.io/github/sponsors/alessiofrittoli?label=Sponsor&logo=GitHub" alt="Currently sponsoring this project"/>
-  </a>
 </p>
 
 [sponsor-badge]: https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2

@@ -150,9 +150,8 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 	/**
 	 * Defines the current media player state.
 	 * 
-	 * If `undefined` it means the player hasn't been started or has been stopped.
 	 */
-	state?: PlayerState
+	state: PlayerState
 	/**
 	 * Defines whether the media player is currently playing.
 	 * 
@@ -191,11 +190,27 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 	next: UtilityPlayPauseHandler<T>
 }
 
-
+/**
+ * The media player state.
+ * 
+ */
 export enum PlayerState
 {
-	PLAYING	= 'playing',
-	PAUSED	= 'paused',
+	/**
+	 * The media player is currently playing.
+	 * 
+	 */
+	PLAYING = 'playing',
+	/**
+	 * The media player is currently paused.
+	 * 
+	 */
+	PAUSED = 'paused',
+	/**
+	 * The media player hasn't been started yet or has been stopped.
+	 * 
+	 */
+	STOPPED = 'stopped',
 }
 
 
@@ -225,7 +240,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 	const initialLoadedRef = useRef( false )
 
-	const [ state, setState ] = useState<PlayerState | undefined>( PlayerState.PAUSED )
+	const [ state, setState ] = useState<PlayerState>( PlayerState.STOPPED )
 
 	const isPlaying = state === PlayerState.PLAYING
 	
@@ -243,7 +258,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			pauseMedia( { media, fade, onEnd() {
 				navigator.mediaSession.playbackState = 'none'
 			}, } )
-			setState( undefined )
+			setState( PlayerState.STOPPED )
 			return current
 		}
 
@@ -325,7 +340,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 		)
 
 		if ( ! data ) {
-			setState( undefined )
+			setState( PlayerState.STOPPED )
 			return
 		}
 

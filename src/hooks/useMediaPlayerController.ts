@@ -9,6 +9,29 @@ import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/med
 import type { UseVolume } from '@/hooks/useVolume'
 import type { Queue, Bookmark } from '@/types'
 
+/**
+ * The media player state.
+ * 
+ */
+export enum PlayerState
+{
+	/**
+	 * The media player is currently playing.
+	 * 
+	 */
+	PLAYING = 'playing',
+	/**
+	 * The media player is currently paused.
+	 * 
+	 */
+	PAUSED = 'paused',
+	/**
+	 * The media player hasn't been started yet or has been stopped.
+	 * 
+	 */
+	STOPPED = 'stopped',
+}
+
 
 /**
  * Defines play/pause media handler options.
@@ -141,6 +164,7 @@ export interface UseMediaPlayerControllerOptions<T extends Queue>
 	onPlaybackError?: PlaybackErrorHandler
 }
 
+
 /**
  * The return type of the `useMediaPlayerController` hook.
  * 
@@ -153,7 +177,7 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 	 */
 	state: PlayerState
 	/**
-	 * Defines whether the media player is currently playing.
+	 e Defines whether the media player is currently playing.
 	 * 
 	 */
 	isPlaying: boolean
@@ -188,29 +212,6 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 	 * @returns The queued item being played if any.
 	 */
 	next: UtilityPlayPauseHandler<T>
-}
-
-/**
- * The media player state.
- * 
- */
-export enum PlayerState
-{
-	/**
-	 * The media player is currently playing.
-	 * 
-	 */
-	PLAYING = 'playing',
-	/**
-	 * The media player is currently paused.
-	 * 
-	 */
-	PAUSED = 'paused',
-	/**
-	 * The media player hasn't been started yet or has been stopped.
-	 * 
-	 */
-	STOPPED = 'stopped',
 }
 
 
@@ -355,7 +356,11 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			media.load()
 		}
 
-		const volumeFade = ! state ? data.fade?.in ?? fade : fade
+		const volumeFade = (
+			state === PlayerState.STOPPED
+				? data.fade?.in ?? fade
+				: fade
+		)
 
 		playMedia( { media, data, volume, fade: volumeFade, onError( error ) {
 			// alert( 'FIXME: i should be able to easly play next media.' )

@@ -1,4 +1,5 @@
 export * from '@/hooks/useVolume'
 export * from '@/hooks/useMediaPlayerController'
 export * from '@/hooks/useMediaPlayerLoading'
+export * from '@/hooks/useMediaPreload'
 export type * from '@/types'

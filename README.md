@@ -49,6 +49,7 @@
   - [React Hooks](#react-hooks)
     - [`useVolume`](#usevolume)
     - [`useMediaPlayerController`](#usemediaplayercontroller)
+    - [`useMediaPlayerLoading`](#usemediaplayerloading)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -126,7 +127,7 @@ An object providing volume control functionality including volume management, mu
 
 <summary style="cursor:pointer">Usage</summary>
 
-```ts
+```tsx
 import { useVolume } from "@alessiofrittoli/react-media-player";
 
 const { setVolume, toggleMute, volumeRef } = useVolume({
@@ -370,6 +371,99 @@ export const MyComponent: React.FC = () => {
     >
       Play {queue2.items.at(1)?.title}
     </button>
+  );
+};
+```
+
+</details>
+
+---
+
+##### `useMediaPlayerLoading`
+
+Handle media loading and error states.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter       | Type                           | Description                                      |
+| --------------- | ------------------------------ | ------------------------------------------------ |
+| `options`       | `UseMediaPlayerLoadingOptions` | An object defining media player loading options. |
+| `options.media` | `HTMLMediaElement`             | The `HTMLMediaElement`.                          |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseMediaPlayerLoading`
+
+An object defining loading and error states.
+
+| Parameter   | Type         | Description                                                                                                                                                                                 |
+| ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isLoading` | `boolean`    | Indicates whether the current media is loading.                                                                                                                                             |
+| `error`     | `MediaError` | The `MediaError` interface represents an error which occurred while handling                                                                                                                |
+|             |              | media in an HTML media element based on [`HTMLMediaElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement),                                                            |
+|             |              | such as [`<audio>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio) or [`<video>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video). |
+|             |              | - see [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/MediaError).                                                                                                         |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+"use client";
+import { useEffect, useState } from "react";
+import { useMediaPlayerLoading } from "@alessiofrittoli/react-media-player";
+
+export const MyComponent: React.FC = () => {
+  const [media, setMedia] = useState<HTMLAudioElement>();
+
+  const { isLoading, error } = useMediaPlayerLoading({ media });
+
+  useEffect(() => {
+    setMedia(new Audio("/assets/music/M83-midnight-city.mp4"));
+  }, []);
+
+  return (
+    <>
+      {isLoading && <span>Loading...</span>}
+      {!isLoading && !error && <span>Loaded</span>}
+      {error?.code === MediaError?.MEDIA_ERR_ABORTED && (
+        <span>
+          The fetching of the associated resource was aborted by the user's
+          request.
+        </span>
+      )}
+      {error?.code === MediaError?.MEDIA_ERR_NETWORK && (
+        <span>
+          Some kind of network error occurred which prevented the media from
+          being successfully fetched, despite having previously been available.
+        </span>
+      )}
+      {error?.code === MediaError?.MEDIA_ERR_DECODE && (
+        <span>
+          Despite having previously been determined to be usable, an error
+          occurred while trying to decode the media resource, resulting in an
+          error.
+        </span>
+      )}
+      {error?.code === MediaError?.MEDIA_ERR_SRC_NOT_SUPPORTED && (
+        <span>
+          The associated resource or media provider object (such as a
+          MediaStream) has been found to be unsuitable.
+        </span>
+      )}
+    </>
   );
 };
 ```

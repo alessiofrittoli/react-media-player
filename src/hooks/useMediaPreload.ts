@@ -4,7 +4,8 @@ import { getTypedMap } from '@alessiofrittoli/web-utils'
 import { clamp } from '@alessiofrittoli/math-utils'
 
 import { getPreloadStrategy, type Media } from '@alessiofrittoli/media-utils'
-import type { Queue, UseMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import type { Queue } from '@/types'
+import type { UseMediaPlayerController } from '@/hooks/useMediaPlayerController'
 
 
 const MAX_CACHE_ENTRIES = 3
@@ -67,7 +68,7 @@ export interface UseMediaPreload
  * 
  * @param options An object defining media preload options. See {@link UseMediaPreloadOptions} for more info.
  * 
- * @returns An object containing preload functions.
+ * @returns An object containing preload functions. See {@link UseMediaPreload}.
  */
 export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPreloadOptions<T> ): UseMediaPreload => {
 
@@ -116,8 +117,6 @@ export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPrelo
 					: document.createElement( 'video' )
 			) ).get( mediaMapKey )!
 		)
-
-		// if ( preloadMedia.src === src ) return
 
 		preloadMedia.preload	= preload
 		preloadMedia.muted		= true

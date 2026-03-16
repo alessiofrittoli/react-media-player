@@ -441,10 +441,9 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			const fadeDuration = (
 				current.fade?.out ?? playPauseFadeDuration ?? Tween.Duration
 			)
-			const exitCuePoint = current.fadeCuePoints?.out || fadeDuration
 
 			const shouldFade = (
-				Math.floor( media.currentTime ) === Math.floor( media.duration - ( exitCuePoint / 1000 ) )
+				Math.floor( media.currentTime ) === Math.floor( media.duration - ( fadeDuration / 1000 ) )
 			)
 
 			if ( ! shouldFade ) return

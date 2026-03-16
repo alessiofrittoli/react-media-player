@@ -245,7 +245,6 @@ const queue: Playlist = {
       artist: "Artist name",
       customProp: true,
       fade: { in: 1000, out: 1000 },
-      fadeCuePoints: { in: 0, out: 5000 },
       artwork: [
         { src: "/artwork-96.png", sizes: 96, type: "image/png" },
         { src: "/artwork-128.png", sizes: 128, type: "image/png" },
@@ -264,7 +263,6 @@ const queue: Playlist = {
       artist: "Artist name",
       customProp: true,
       fade: { in: 1000, out: 1000 },
-      fadeCuePoints: { in: 0, out: 5000 },
       artwork: [
         { src: "/artwork-96.png", sizes: 96, type: "image/png" },
         { src: "/artwork-128.png", sizes: 128, type: "image/png" },

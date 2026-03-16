@@ -31,7 +31,7 @@ export interface Media extends GlobalMedia
 	/**
 	 * The media fade markers.
 	 * 
-	 * Indicates at which time in seconds the fade should be applied.
+	 * Indicates at which time in milliseconds the fade should be applied.
 	 */
 	fadeCuePoints?: FadeSettings
 }

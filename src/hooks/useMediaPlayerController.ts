@@ -178,7 +178,7 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 	 */
 	state: PlayerState
 	/**
-	 e Defines whether the media player is currently playing.
+	 * Defines whether the media player is currently playing.
 	 * 
 	 */
 	isPlaying: boolean
@@ -219,7 +219,7 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 /**
  * React media player controller state.
  * 
- * @param	options An object defining media player options. See {@link UseMediaPlayerControllerOptions} for more info.
+ * @param	options An object defining media player controller options. See {@link UseMediaPlayerControllerOptions} for more info.
  * @returns	An object defining media player state and utilities. See {@link UseMediaPlayerController} for more info.
  */
 export const useMediaPlayerController = <T extends Queue = Queue>(

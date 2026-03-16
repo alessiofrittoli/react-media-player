@@ -50,6 +50,7 @@
     - [`useVolume`](#usevolume)
     - [`useMediaPlayerController`](#usemediaplayercontroller)
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
+    - [`useMediaPreload`](#usemediapreload)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -285,10 +286,15 @@ const queue: Playlist = {
 ```tsx
 "use client";
 
+import { useRef } from "react";
 import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
 
 export const MyComponent: React.FC = () => {
-  const { isPlaying, togglePlayPause } = useMediaPlayerController({ queue });
+  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const { isPlaying, togglePlayPause } = useMediaPlayerController({
+    queue,
+    media,
+  });
 
   return (
     <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
@@ -303,11 +309,14 @@ export const MyComponent: React.FC = () => {
 ```tsx
 "use client";
 
+import { useRef } from "react";
 import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
 
 export const MyComponent: React.FC = () => {
+  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
   const { hasPrevious, previous } = useMediaPlayerController({
     queue,
+    media,
     repeat: false,
   });
 
@@ -322,10 +331,16 @@ export const MyComponent: React.FC = () => {
 ```tsx
 "use client";
 
+import { useRef } from "react";
 import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
 
 export const MyComponent: React.FC = () => {
-  const { hasNext, next } = useMediaPlayerController({ queue, repeat: false });
+  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const { hasNext, next } = useMediaPlayerController({
+    queue,
+    media,
+    repeat: false,
+  });
 
   return hasNext && <button onClick={next}>Next song</button>;
 };
@@ -336,10 +351,14 @@ export const MyComponent: React.FC = () => {
 ###### Play a queued media matching given UUID
 
 ```tsx
+"use client";
+
+import { useRef } from "react";
 import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
 
 export const MyComponent: React.FC = () => {
-  const { playPause } = useMediaPlayerController({ queue });
+  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const { playPause } = useMediaPlayerController({ queue, media });
 
   return (
     <button
@@ -358,10 +377,14 @@ export const MyComponent: React.FC = () => {
 ###### Update queue and play a queued media matching given UUID
 
 ```tsx
+"use client";
+
+import { useRef } from "react";
 import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
 
 export const MyComponent: React.FC = () => {
-  const { playPause } = useMediaPlayerController({ queue });
+  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const { playPause } = useMediaPlayerController({ queue, media });
 
   return (
     <button
@@ -422,6 +445,7 @@ An object defining loading and error states.
 
 ```tsx
 "use client";
+
 import { useEffect, useState } from "react";
 import { useMediaPlayerLoading } from "@alessiofrittoli/react-media-player";
 
@@ -431,7 +455,7 @@ export const MyComponent: React.FC = () => {
   const { isLoading, error } = useMediaPlayerLoading({ media });
 
   useEffect(() => {
-    setMedia(new Audio("/assets/music/M83-midnight-city.mp4"));
+    setMedia(new Audio("/song.mp3"));
   }, []);
 
   return (
@@ -463,6 +487,139 @@ export const MyComponent: React.FC = () => {
           MediaStream) has been found to be unsuitable.
         </span>
       )}
+    </>
+  );
+};
+```
+
+</details>
+
+---
+
+##### `useMediaPreload`
+
+Handle media preload.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description            |
+| --------- | ------------------------- | ---------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter                 | Type                          | Default | Description                                                          |
+| ------------------------- | ----------------------------- | ------- | -------------------------------------------------------------------- |
+| `options`                 | `UseVolumeOptions`            | -       | Configuration options for the volume hook.                           |
+| `options.controller`      | `UseMediaPlayerController<T>` | -       | The media player controller.                                         |
+| `options.cacheEntries`    | `number`                      | `3`     | Defines the maximum cache entries.                                   |
+| `options.checkConnection` | `boolean`                     | `true`  | Defines whether preload is enabled based on user connection quality. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseMediaPreload`
+
+An object containing preload functions.
+
+| Property               | Type                  | Description             |
+| ---------------------- | --------------------- | ----------------------- |
+| `preloadMedia`         | `PreloadMediaHandler` | Preload media.          |
+| `preloadPreviousMedia` | `VoidFunction`        | Preload previous media. |
+| `preloadNextMedia`     | `VoidFunction`        | Preload next media.     |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { addItemsUUID } from "@alessiofrittoli/react-media-player/utils";
+import {
+  useMediaPlayerController,
+  useMediaPreload,
+  type Media,
+  type Queue,
+} from "@alessiofrittoli/react-media-player";
+
+interface Playlist extends Queue<Media> {
+  name?: string;
+}
+
+const queue: Playlist = {
+  name: "Playlist name",
+  items: addItemsUUID<Media>([
+    {
+      src: "/song-1.mp3",
+      type: "audio",
+    },
+    {
+      src: "/song-2.mp3",
+      type: "audio",
+    },
+  ]),
+};
+
+export const MyComponent: React.FC = () => {
+  const [media, setMedia] = useState<HTMLAudioElement>();
+
+  const controller = useMediaPlayerController({ queue, media });
+  const { preloadPreviousMedia, preloadNextMedia } = useMediaPreload({
+    controller,
+  });
+  const { isPlaying, hasPrevious, hasNext, previous, next, togglePlayPause } =
+    controller;
+
+  useEffect(() => {
+    setMedia(new Audio());
+  }, []);
+
+  return (
+    <>
+      <button
+        onMouseEnter={() => {
+          if (!hasPrevious) return;
+          preloadPreviousMedia();
+        }}
+        onClick={() => {
+          if (!hasPrevious) return;
+          previous();
+        }}
+      >
+        Previous
+      </button>
+      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+      <button
+        onMouseEnter={() => {
+          if (!hasNext) return;
+          preloadNextMedia();
+        }}
+        onClick={() => {
+          if (!hasNext) return;
+          next();
+        }}
+      >
+        Next
+      </button>
     </>
   );
 };

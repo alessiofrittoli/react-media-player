@@ -1,5 +1,3 @@
-'use client'
-
 import { useCallback, useRef } from 'react'
 import { easing } from '@alessiofrittoli/math-utils'
 import { AudioEngine, fadeVolume } from '@alessiofrittoli/media-utils/audio'
@@ -21,7 +19,7 @@ export type ToggleMuteHandler = () => number
 
 
 /**
- * Configuration options for the useVolume hook.
+ * Configuration options for the `useVolume` hook.
  * 
  */
 export interface UseVolumeOptions

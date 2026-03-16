@@ -69,7 +69,6 @@ export interface UseMediaPreload
  * 
  * @returns An object containing preload functions.
  */
-// todo: add jest unit tests with 100% coverage
 export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPreloadOptions<T> ): UseMediaPreload => {
 
 	const {
@@ -118,7 +117,7 @@ export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPrelo
 			) ).get( mediaMapKey )!
 		)
 
-		if ( preloadMedia.src === src ) return
+		// if ( preloadMedia.src === src ) return
 
 		preloadMedia.preload	= preload
 		preloadMedia.muted		= true
@@ -164,8 +163,6 @@ export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPrelo
 
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 			preloadedSetRef.current.clear()
-
-			if ( ! mediaMapRef.current ) return
 
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 			const mediaMap = mediaMapRef.current

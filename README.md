@@ -732,9 +732,8 @@ import {
   useMediaPlayerController,
 } from "@alessiofrittoli/react-media-player";
 import {
-  isDocumentPictureInPictureSupported,
   openDocumentPictureInPicture,
-  openArtworkPictureInPicture,
+  isDocumentPictureInPictureSupported,
 } from "@alessiofrittoli/web-utils";
 import { openArtworkPictureInPicture } from "@alessiofrittoli/media-utils/picture-in-picture";
 

@@ -48,6 +48,7 @@
 - [API Reference](#api-reference)
   - [React Hooks](#react-hooks)
     - [`useMediaPlayer`](#usemediaplayer)
+    - [`useVideoPlayer`](#usevideoplayer)
     - [`useVolume`](#usevolume)
     - [`useMediaPlayerController`](#usemediaplayercontroller)
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
@@ -173,6 +174,52 @@ useAudioPlayer({
   onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
   onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
 });
+```
+
+- See [Defining the queue](#defining-the-queue) for more info.
+
+</details>
+
+---
+
+##### `useVideoPlayer`
+
+Easily handle React video players.
+
+This hook act as a wrapper of [`useMediaPlayer`](#usemediaplayer) and it automatically creates a `React.RefObject` that
+needs to be attached to a `<video />` JSX node.
+
+Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API reference.
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+"use client";
+
+import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
+import type {
+  MediaChangeHandler,
+  PlaybackErrorHandler,
+} from "@alessiofrittoli/react-media-player";
+
+export const VideoPlayer: React.FC = () => {
+  const { videoRef } = useVideoPlayer({
+    queue,
+    initialMedia: queue.items.at(2),
+    normalizeVolume: true,
+    playPauseFadeDuration: 500,
+    preload: true,
+    repeat: true,
+    restartThreshold: 6000,
+    volume: 1,
+    onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
+    onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
+  });
+
+  return <video ref={videoRef} />;
+};
 ```
 
 - See [Defining the queue](#defining-the-queue) for more info.

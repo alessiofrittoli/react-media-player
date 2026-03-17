@@ -47,6 +47,7 @@
 - [Getting started](#getting-started)
 - [API Reference](#api-reference)
   - [React Hooks](#react-hooks)
+    - [`useMediaPlayer`](#usemediaplayer)
     - [`useVolume`](#usevolume)
     - [`useMediaPlayerController`](#usemediaplayercontroller)
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
@@ -84,9 +85,63 @@ pnpm i @alessiofrittoli/react-media-player
 
 #### React Hooks
 
+##### `useMediaPlayer`
+
+Easily handle React media players.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description            |
+| --------- | ------------------------- | ---------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter         | Type                       | Default | Description                                                                                |
+| ----------------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------ |
+| `options`         | `UseMediaPlayerOptions<T>` | -       | An object defining media player options.                                                   |
+|                   |                            |         | - extends [`UseVolumeOptions`](#usevolumeoptions) interface.                               |
+|                   |                            |         | - extends [`UseMediaPlayerControllerOptions`](#usemediaplayercontrolleroptions) interface. |
+| `options.preload` | `boolean`                  | `true`  | Indicates whether to preload next media when current media is about to end.                |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseMediaPlayer<T>`
+
+An object defining media player state and utilities.
+
+- extends [`UseVolume`](#usevolume-interface) interface.
+- extends [`UseMediaPlayerController<T>`](#usemediaplayercontroller-interface) interface.
+- extends [`UseMediaPreload`](#usemediapreload-interface) interface.
+- extends [`UseMediaPlayerLoading`](#usemediaplayerloading-interface) interface.
+
+| Property | Type               | Description                   |
+| -------- | ------------------ | ----------------------------- |
+| `media`  | `HTMLMediaElement` | The given `HTMLMediaElement`. |
+
+</details>
+
+---
+
 ##### `useVolume`
 
 Manage audio volume control.
+
+###### `UseVolumeOptions`
 
 <details>
 
@@ -103,6 +158,8 @@ Manage audio volume control.
 </details>
 
 ---
+
+###### `UseVolume` interface
 
 <details>
 
@@ -161,6 +218,8 @@ React media player controller state.
 
 ---
 
+###### `UseMediaPlayerControllerOptions`
+
 <details>
 
 <summary style="cursor:pointer">Parameters</summary>
@@ -185,6 +244,8 @@ React media player controller state.
 </details>
 
 ---
+
+###### `UseMediaPlayerController` interface
 
 <details>
 
@@ -421,6 +482,8 @@ Handle media loading and error states.
 
 ---
 
+###### `UseMediaPlayerLoading` interface
+
 <details>
 
 <summary style="cursor:pointer">Returns</summary>
@@ -528,6 +591,8 @@ Handle media preload.
 </details>
 
 ---
+
+###### `UseMediaPreload` interface
 
 <details>
 

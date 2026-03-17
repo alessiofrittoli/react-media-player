@@ -39,12 +39,16 @@ export interface UseMediaPlayerOptions<T extends Queue = Queue> extends UseVolum
 
 export interface UseMediaPlayer<T extends Queue = Queue> extends UseVolume, UseMediaPlayerController<T>, UseMediaPreload, UseMediaPlayerLoading
 {
+	/**
+	 * The given `HTMLMediaElement`.
+	 * 
+	 */
 	media?: HTMLMediaElement
 }
 
 
 /**
- * Easily handle media player.
+ * Easily handle React media players.
  * 
  * @param	options An object defining media player options. See {@link UseMediaPlayerOptions} for more info.
  * @returns	An object defining media player state and utilities. See {@link UseMediaPlayer} for more info.

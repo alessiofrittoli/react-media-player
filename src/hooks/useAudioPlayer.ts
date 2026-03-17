@@ -19,3 +19,19 @@ export const useAudioPlayer = <T extends Queue = Queue>( options: UseAudioPlayer
 		...options
 	} )
 )
+
+// export const useAudioPlayer = <T extends Queue = Queue>( options: UseAudioPlayerOptions<T> ): UseMediaPlayer<T> => {
+	
+// 	const [ media, setMedia ] = useState<HTMLMediaElement>()
+	
+// 	/**
+// 	 * Create a new HTMLMediaElement once hook did mount.
+// 	 * 
+// 	 */
+// 	useEffect( () => {
+// 		if ( media ) return
+// 		setMedia( new Audio() )
+// 	}, [ media ] )
+
+// 	return useMediaPlayer<T>( { media, ...options } )
+// }

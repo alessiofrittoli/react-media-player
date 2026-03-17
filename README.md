@@ -83,7 +83,103 @@ pnpm i @alessiofrittoli/react-media-player
 
 ### API Reference
 
+#### Defining the queue
+
+```ts
+import { addItemsUUID } from "@alessiofrittoli/react-media-player/utils";
+import type { Media, Queue } from "@alessiofrittoli/react-media-player";
+
+interface PlaylistMedia extends Media {
+  customProp: boolean;
+}
+
+interface Playlist extends Queue<PlaylistMedia> {
+  name?: string;
+}
+
+const queue: Playlist = {
+  name: "Playlist name",
+  items: addItemsUUID<PlaylistMedia>([
+    {
+      src: "/song.mp3",
+      type: "audio",
+      title: "Song title",
+      album: "Album name",
+      artist: "Artist name",
+      customProp: true,
+      fade: { in: 1000, out: 1000 },
+      artwork: [
+        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
+        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
+        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
+        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
+        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
+        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
+      ],
+      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
+    },
+    {
+      src: "/song-2.mp3",
+      type: "audio",
+      title: "Song title 2",
+      album: "Album name",
+      artist: "Artist name",
+      customProp: true,
+      fade: { in: 1000, out: 1000 },
+      artwork: [
+        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
+        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
+        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
+        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
+        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
+        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
+      ],
+      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
+    },
+  ]),
+};
+```
+
 #### React Hooks
+
+##### `useAudioPlayer`
+
+Easily handle React audio players.
+
+This hook act as a wrapper of [`useMediaPlayer`](#usemediaplayer) and it automatically creates `Audio` resource for you.
+
+Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API reference.
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```ts
+import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
+import type {
+  MediaChangeHandler,
+  PlaybackErrorHandler,
+} from "@alessiofrittoli/react-media-player";
+
+useAudioPlayer({
+  queue,
+  initialMedia: queue.items.at(2),
+  normalizeVolume: true,
+  playPauseFadeDuration: 500,
+  preload: true,
+  repeat: true,
+  restartThreshold: 6000,
+  volume: 1,
+  onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
+  onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
+});
+```
+
+- See [Defining the queue](#defining-the-queue) for more info.
+
+</details>
+
+---
 
 ##### `useMediaPlayer`
 
@@ -132,6 +228,41 @@ An object defining media player state and utilities.
 | Property | Type               | Description                   |
 | -------- | ------------------ | ----------------------------- |
 | `media`  | `HTMLMediaElement` | The given `HTMLMediaElement`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```ts
+import { useRef } from "react";
+import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
+import type {
+  MediaChangeHandler,
+  PlaybackErrorHandler,
+} from "@alessiofrittoli/react-media-player";
+
+const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+
+useMediaPlayer({
+  media: media.current,
+  queue,
+  initialMedia: queue.items.at(2),
+  normalizeVolume: true,
+  playPauseFadeDuration: 500,
+  preload: true,
+  repeat: true,
+  restartThreshold: 6000,
+  volume: 1,
+  onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
+  onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
+});
+```
+
+- See [Defining the queue](#defining-the-queue) for more info.
 
 </details>
 
@@ -224,22 +355,22 @@ React media player controller state.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter                       | Type                                 | Default | Description                                                                            |
-| ------------------------------- | ------------------------------------ | ------- | -------------------------------------------------------------------------------------- |
-| `options`                       | `UseMediaPlayerControllerOptions<T>` | -       | An object defining media player controller options.                                    |
-| `options.volumeRef`             | `React.RefObject<number>`            | -       | A React RefObject that stores the master volume value [0-1].                           |
-|                                 |                                      | -       | Compatible with `volumeRef` returned by [`useVolume`](#usevolume) hook.                |
-| `options.repeat`                | `boolean`                            | `true`  | Indicates whether repeatition of the given queue is initially active.                  |
-| `options.media`                 | `HTMLMediaElement`                   | -       | The `HTMLMediaElement`.                                                                |
-| `options.queue`                 | `T`                                  | -       | An object describing the queue.                                                        |
-| `options.initialMedia`          | `InitialMedia<QueuedItemType<T>>`    | -       | Defines the initial queue media to load.                                               |
-| `options.restartThreshold`      | `number\|false`                      | `5000`  | Indicates time in milliseconds after that the media restart to `0`                     |
-|                                 |                                      |         | rather than playing the previous one.                                                  |
-|                                 |                                      |         | This only take effect when `previous()` method is called.                              |
-|                                 |                                      |         | You can opt-out by this functionality by setting `restartThreshold` to `false` or `0`. |
-| `options.playPauseFadeDuration` | `number`                             | `200`   | Volume fade in milliseconds applied when soundtrack start playing/get paused.          |
-| `options.onMediaChange`         | `MediaChangeHandler<T>`              | -       | A callback executed when media player is playing and transitioning to another media.   |
-| `options.onPlaybackError`       | `PlaybackErrorHandler`               | -       | A callback executed when an error occurs when playing a media.                         |
+| Parameter                       | Type                                 | Default | Description                                                                                  |
+| ------------------------------- | ------------------------------------ | ------- | -------------------------------------------------------------------------------------------- |
+| `options`                       | `UseMediaPlayerControllerOptions<T>` | -       | An object defining media player controller options.                                          |
+| `options.volumeRef`             | `React.RefObject<number>`            | -       | A React RefObject that stores the master volume value [0-1].                                 |
+|                                 |                                      | -       | Compatible with `volumeRef` returned by [`useVolume`](#usevolume) hook.                      |
+| `options.repeat`                | `boolean`                            | `true`  | Indicates whether repeatition of the given queue is initially active.                        |
+| `options.media`                 | `HTMLMediaElement`                   | -       | The `HTMLMediaElement`.                                                                      |
+| `options.queue`                 | `T`                                  | -       | An object describing the queue. See [Defining the queue](#defining-the-queue) for more info. |
+| `options.initialMedia`          | `InitialMedia<QueuedItemType<T>>`    | -       | Defines the initial queue media to load.                                                     |
+| `options.restartThreshold`      | `number\|false`                      | `5000`  | Indicates time in milliseconds after that the media restart to `0`                           |
+|                                 |                                      |         | rather than playing the previous one.                                                        |
+|                                 |                                      |         | This only take effect when `previous()` method is called.                                    |
+|                                 |                                      |         | You can opt-out by this functionality by setting `restartThreshold` to `false` or `0`.       |
+| `options.playPauseFadeDuration` | `number`                             | `200`   | Volume fade in milliseconds applied when soundtrack start playing/get paused.                |
+| `options.onMediaChange`         | `MediaChangeHandler<T>`              | -       | A callback executed when media player is playing and transitioning to another media.         |
+| `options.onPlaybackError`       | `PlaybackErrorHandler`               | -       | A callback executed when an error occurs when playing a media.                               |
 
 </details>
 
@@ -284,65 +415,6 @@ An object defining media player state and utilities.
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
-
-###### Defining the queue
-
-```ts
-import { addItemsUUID } from "@alessiofrittoli/react-media-player/utils";
-import type { Media, Queue } from "@alessiofrittoli/react-media-player";
-
-interface PlaylistMedia extends Media {
-  customProp: boolean;
-}
-
-interface Playlist extends Queue<PlaylistMedia> {
-  name?: string;
-}
-
-const queue: Playlist = {
-  name: "Playlist name",
-  items: addItemsUUID<PlaylistMedia>([
-    {
-      src: "/song.mp3",
-      type: "audio",
-      title: "Song title",
-      album: "Album name",
-      artist: "Artist name",
-      customProp: true,
-      fade: { in: 1000, out: 1000 },
-      artwork: [
-        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
-        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
-        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
-        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
-        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
-        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
-      ],
-      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
-    },
-    {
-      src: "/song-2.mp3",
-      type: "audio",
-      title: "Song title 2",
-      album: "Album name",
-      artist: "Artist name",
-      customProp: true,
-      fade: { in: 1000, out: 1000 },
-      artwork: [
-        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
-        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
-        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
-        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
-        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
-        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
-      ],
-      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
-    },
-  ]),
-};
-```
-
----
 
 ###### Toggle play/pause
 

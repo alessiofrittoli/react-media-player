@@ -34,9 +34,9 @@ export const useVideoPlayer = <T extends Queue = Queue>( options: UseVideoPlayer
 	 * 
 	 */
 	useEffect( () => {
-		if ( media || ! videoRef.current ) return
+		if ( ! videoRef.current ) return
 		setMedia( videoRef.current )
-	}, [ media ] )
+	}, [] )
 
 	return { videoRef, ...useMediaPlayer<T>( { media, ...options } ) }
 

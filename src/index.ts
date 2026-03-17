@@ -1,3 +1,6 @@
+export * from '@/hooks/useAudioPlayer'
+export * from '@/hooks/useVideoPlayer'
+export * from '@/hooks/useMediaPlayer'
 export * from '@/hooks/useVolume'
 export * from '@/hooks/useMediaPlayerController'
 export * from '@/hooks/useMediaPlayerLoading'

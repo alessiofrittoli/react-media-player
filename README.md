@@ -51,6 +51,7 @@
     - [`useMediaPlayerController`](#usemediaplayercontroller)
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
     - [`useMediaPreload`](#usemediapreload)
+    - [`useMediaSession`](#usemediasession)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -626,6 +627,65 @@ export const MyComponent: React.FC = () => {
 ```
 
 </details>
+
+---
+
+##### `useMediaSession`
+
+Hook into MediaSession API for controlling media playback through system controls.
+
+Manages MediaSession state and action handlers for play, pause, stop, seek, previous, and next operations.
+Synchronizes the native media element's playback state with the MediaSession API and handles user interactions
+through system media controls (e.g., keyboard shortcuts, media control buttons).
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter                | Type                        | Description                                                                                                |
+| ------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `options`                | `UseMediaSessionOptions`    | An object defining options and callbacks.                                                                  |
+| `options.media`          | `HTMLMediaElement`          | The `HTMLMediaElement`.                                                                                    |
+| `options.register`       | `boolean`                   | Indicates whether to register the action handlers.                                                         |
+|                          |                             | ⚠️ It is best option to set `register` to `true` once and only after `media.play()` has been called.       |
+| `options.onPlay`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the media through browser/device controls.          |
+| `options.onPause`        | `MediaSessionActionHandler` | A custom callback executed once user requested to pause the media through browser/device controls.         |
+| `options.onStop`         | `MediaSessionActionHandler` | A custom callback executed once user requested to stop the media through browser/device controls.          |
+|                          |                             | ⚠️ Stop requests always depends on browser support.                                                        |
+| `options.onPrev`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the previous media through browser/device controls. |
+|                          |                             | ⚠️ Please note that if no `onPrev` function is given, the MediaSession functionality will not be enabled.  |
+| `options.onNext`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the next media through browser/device controls.     |
+|                          |                             | ⚠️ Please note that if no `onNext` function is given, the MediaSession functionality will not be enabled.  |
+| `options.onSeekBackward` | `MediaSessionActionHandler` | A custom callback executed once user requested to seek backward through browser/device controls.           |
+| `options.onSeekForward`  | `MediaSessionActionHandler` | A custom callback executed once user requested to seek forward through browser/device controls.            |
+| `options.onSeekTo`       | `MediaSessionActionHandler` | A custom callback executed once user requested to seek to a specific time through browser/device controls. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```ts
+const { state, hasNext, hasPrevious, togglePlayPause, stop, previous, next } =
+  useMediaPlayerController({ queue, media });
+
+useMediaSession({
+  media,
+  register: !!state,
+  onPlay: togglePlayPause,
+  onPause: togglePlayPause,
+  onStop: stop,
+  onPrev: hasPrevious ? previous : undefined,
+  onNext: hasNext ? next : undefined,
+});
+```
+
+</details>
+
+---
 
 ---
 

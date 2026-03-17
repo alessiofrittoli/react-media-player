@@ -47,16 +47,21 @@
 - [Getting started](#getting-started)
 - [API Reference](#api-reference)
   - [React Hooks](#react-hooks)
-    - [`useMediaPlayer`](#usemediaplayer)
+    - [`useAudioPlayer`](#useaudioplayer)
+    - [`useAudioPlayerStore`](#useaudioplayerstore)
     - [`useVideoPlayer`](#usevideoplayer)
+    - [`useVideoPlayerStore`](#usevideoplayerstore)
+    - [`useMediaPlayer`](#usemediaplayer)
     - [`useVolume`](#usevolume)
+    - [`useVolumeStore`](#usevolumestore)
     - [`useMediaPlayerController`](#usemediaplayercontroller)
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
     - [`useMediaPreload`](#usemediapreload)
     - [`useMediaSession`](#usemediasession)
     - [`useMediaSessionPiP`](#usemediasessionpip)
+  - [React Components](#react-components)
 - [Development](#development)
-  - [Install depenendencies](#install-depenendencies)
+  - [Install dependencies](#install-dependencies)
   - [Build the source code](#build-the-source-code)
   - [ESLint](#eslint)
   - [Jest](#jest)
@@ -141,13 +146,15 @@ const queue: Playlist = {
 };
 ```
 
+---
+
 #### React Hooks
 
 ##### `useAudioPlayer`
 
 Easily handle React audio players.
 
-This hook act as a wrapper of [`useMediaPlayer`](#usemediaplayer) and it automatically creates `Audio` resource for you.
+This hook acts as a wrapper around [`useMediaPlayer`](#usemediaplayer) and it automatically creates `Audio` resource for you.
 
 Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API reference.
 
@@ -182,11 +189,17 @@ useAudioPlayer({
 
 ---
 
+##### `useAudioPlayerStore`
+
+Access [`useAudioPlayer`](#useaudioplayer) API exposed by [`<AudioPlayerProvider />`](#audioplayerprovider-) Component.
+
+---
+
 ##### `useVideoPlayer`
 
 Easily handle React video players.
 
-This hook act as a wrapper of [`useMediaPlayer`](#usemediaplayer) and it automatically creates a `React.RefObject` that
+This hook acts as a wrapper around [`useMediaPlayer`](#usemediaplayer) and it automatically creates a `React.RefObject` that
 needs to be attached to a `<video />` JSX node.
 
 Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API reference.
@@ -225,6 +238,12 @@ export const VideoPlayer: React.FC = () => {
 - See [Defining the queue](#defining-the-queue) for more info.
 
 </details>
+
+---
+
+##### `useVideoPlayerStore`
+
+Access [`useVideoPlayer`](#usevideoplayer) API exposed by [`<VideoPlayerProvider />`](#videoplayerprovider-) Component.
 
 ---
 
@@ -319,6 +338,10 @@ useMediaPlayer({
 
 Manage audio volume control.
 
+Please note that this hook doesn't update states to avoid useless overloads. This hook only handles `media` volume updates and relative normalizations.
+
+UI state updates can be managed using [`useVolumeStore`](#usevolumestore) accessible inside [`<VolumeProvider />`](#volumeprovider-) Component children.
+
 ###### `UseVolumeOptions`
 
 <details>
@@ -377,6 +400,12 @@ const { setVolume, toggleMute, volumeRef } = useVolume({
 ```
 
 </details>
+
+---
+
+##### `useVolumeStore`
+
+Access [`useVolume`](#usevolume) API exposed by [`<VolumeProvider />`](#volumeprovider-) Component.
 
 ---
 
@@ -851,11 +880,11 @@ through system media controls (e.g., keyboard shortcuts, media control buttons).
 | `options`                | `UseMediaSessionOptions`    | An object defining options and callbacks.                                                                  |
 | `options.media`          | `HTMLMediaElement`          | The `HTMLMediaElement`.                                                                                    |
 | `options.register`       | `boolean`                   | Indicates whether to register the action handlers.                                                         |
-|                          |                             | ⚠️ It is best option to set `register` to `true` once and only after `media.play()` has been called.       |
+|                          |                             | ⚠️ It is better to set `register` to `true` once and only after `media.play()` has been called.            |
 | `options.onPlay`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the media through browser/device controls.          |
 | `options.onPause`        | `MediaSessionActionHandler` | A custom callback executed once user requested to pause the media through browser/device controls.         |
 | `options.onStop`         | `MediaSessionActionHandler` | A custom callback executed once user requested to stop the media through browser/device controls.          |
-|                          |                             | ⚠️ Stop requests always depends on browser support.                                                        |
+|                          |                             | ⚠️ Stop requests always depend on browser support.                                                         |
 | `options.onPrev`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the previous media through browser/device controls. |
 |                          |                             | ⚠️ Please note that if no `onPrev` function is given, the MediaSession functionality will not be enabled.  |
 | `options.onNext`         | `MediaSessionActionHandler` | A custom callback executed once user requested to play the next media through browser/device controls.     |
@@ -901,7 +930,7 @@ useMediaSession({
 
 Hook into MediaSession Picture-in-Picture requests.
 
-_Usefull resources_
+_Useful resources_
 
 - [Document Picture-in-Picture API](https://npmjs.com/package/@alessiofrittoli/web-utils#document-picture-in-picture)
 - [Media Artwork Picture-in-Picture API](https://www.npmjs.com/package/@alessiofrittoli/media-utils#openartworkpictureinpicture)
@@ -975,9 +1004,236 @@ export const MyComponent: React.FC = () => {
 
 ---
 
+#### React Components
+
+##### `<AudioPlayer />`
+
+Creates a React Audio Player and exposes [`useAudioPlayer`](#useaudioplayer) API through React Context
+with [`<AudioPlayerProvider />`](#audioplayerprovider-) and [`<VolumeProvider />`](#volumeprovider-).
+
+This allows you to easily mix-up client and server components passed to the Component children.
+
+<details>
+
+<summary style="cursor:pointer">Component Props</summary>
+
+- extends [`useAudioPlayer`](#useaudioplayer) options
+
+| Property   | Type        | Description                                                                                                                                                                                                       |
+| ---------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode` | Any `ReactNode` which will get access to [`useAudioPlayer`](#useaudioplayer) API and volume UI states through [`useAudioPlayerStore`](#useaudioplayerstore) and [`useVolumeStore`](#usevolumestore) respectively. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
+
+```tsx
+import { AudioPlayer } from "@alessiofrittoli/react-media-player";
+
+export const AppAudioPlayer: React.FC = () => (
+  <AudioPlayer queue={queue}>
+    <AudioPlayerControls />
+  </AudioPlayer>
+);
+```
+
+---
+
+###### Accessing APIs in custom UI controls
+
+```tsx
+import { useCallback } from "react";
+import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
+import { useAudioPlayerStore } from "@alessiofrittoli/react-media-player";
+
+export const AudioPlayerControls: React.FC = () => {
+  const { isPlaying, togglePlayPause } = useAudioPlayerStore();
+
+  return (
+    <>
+      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+    </>
+  );
+};
+```
+
+</details>
+
+---
+
+##### `<VideoPlayer />`
+
+Creates a React Video Player and exposes [`useVideoPlayer`](#usevideoplayer) API through React Context
+with [`<VideoPlayerProvider />`](#videoplayerprovider-) and [`<VolumeProvider />`](#volumeprovider-).
+
+This allows you to easily mix-up client and server components passed to the Component children.
+
+<details>
+
+<summary style="cursor:pointer">Component Props</summary>
+
+- extends [`useVideoPlayer`](#usevideoplayer) options
+
+| Property    | Type                            | Description                                                                                                                                                                                                       |
+| ----------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`  | `ReactNode`                     | Any `ReactNode` which will get access to [`useVideoPlayer`](#usevideoplayer) API and volume UI states through [`useVideoPlayerStore`](#usevideoplayerstore) and [`useVolumeStore`](#usevolumestore) respectively. |
+| `htmlProps` | `React.ComponentProps<'video'>` | Props passed to the rendered `HTMLVideoElement`.                                                                                                                                                                  |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
+
+```tsx
+import { VideoPlayer } from "@alessiofrittoli/react-media-player";
+
+export const AppVideoPlayer: React.FC = () => (
+  <VideoPlayer queue={queue}>
+    <VideoPlayerControls />
+  </VideoPlayer>
+);
+```
+
+---
+
+###### Accessing APIs in custom UI controls
+
+```tsx
+"use client";
+
+import { useCallback } from "react";
+import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
+import { useVideoPlayerStore } from "@alessiofrittoli/react-media-player";
+
+export const VideoPlayerControls: React.FC = () => {
+  const { isPlaying, togglePlayPause } = useVideoPlayerStore();
+
+  return (
+    <>
+      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+    </>
+  );
+};
+```
+
+</details>
+
+---
+
+##### `<AudioPlayerProvider />`
+
+Exposes [`useAudioPlayer`](#useaudioplayer) API.
+
+---
+
+##### `<VideoPlayerProvider />`
+
+Exposes [`useVideoPlayer`](#usevideoplayer) API.
+
+---
+
+##### `<VolumeProvider />`
+
+Exposes UI state updates utilities.
+
+This may come pretty handy when volume is controlled by multiple UI controllers and saves [`useVolume`](#usevolume) hook
+from dispatching state updates whenever a 0.1 volume value has been changed by the user.
+
+This Component is already mounted when using the [`<AudioPlayer />`](#audioplayer-) or [`<VideoPlayer />`](#videoplayer-) Component,
+so no extra action is required by you.
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+"use client";
+
+import { useCallback } from "react";
+import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
+import {
+  AudioPlayer,
+  useVolumeStore,
+  useAudioPlayerStore,
+} from "@alessiofrittoli/react-media-player";
+
+export const AppAudioPlayer: React.FC = () => (
+  <AudioPlayer queue={queue}>
+    <AudioPlayerVolumeControl />
+  </AudioPlayer>
+);
+
+export const AudioPlayerVolumeControl: React.FC = () => {
+  const { volume, setVolume: commitVolume } = useVolumeStore();
+
+  const { initialVolume, setVolume, toggleMute } = useAudioPlayerStore();
+
+  const isMute = volume <= 0;
+
+  const updateVolume = useCallback(
+    (volume: number) => {
+      setVolume(volume / 100);
+      commitVolume(volume / 100);
+    },
+    [setVolume, commitVolume],
+  );
+
+  const toggleMuteHandler = useCallback(() => {
+    commitVolume(toggleMute());
+  }, [toggleMute, commitVolume]);
+
+  useUpdateEffect(() => {
+    updateVolume(initialVolume * 100);
+  }, [initialVolume, updateVolume]);
+
+  const onChangeHandler = useCallback<React.ChangeEventHandler>(
+    (event) => {
+      const input = event.target as HTMLInputElement;
+      const value = Number(input.value);
+
+      if (isNaN(value)) return;
+
+      const percent = (value * 100) / 100;
+
+      updateVolume(percent);
+    },
+    [updateVolume],
+  );
+
+  return (
+    <>
+      <button onClick={toggleMuteHandler}>{!isMute ? "Mute" : "Unmute"}</button>
+      <input
+        type="range"
+        value={volume * 100}
+        max={100}
+        step={1}
+        onChange={onChangeHandler}
+        aria-valuetext={`${volume * 100}%`}
+      />
+    </>
+  );
+};
+```
+
+</details>
+
+---
+
 ### Development
 
-#### Install depenendencies
+#### Install dependencies
 
 ```bash
 npm install
@@ -999,7 +1255,7 @@ pnpm build
 
 #### [ESLint](https://www.npmjs.com/package/eslint)
 
-warnings / errors check.
+Run warnings and errors checks.
 
 ```bash
 pnpm lint
@@ -1026,7 +1282,7 @@ An HTTP server is then started to serve coverage files from `./coverage` folder.
 ⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
 
 ```bash
-test:coverage:serve
+pnpm test:coverage:serve
 ```
 
 ---

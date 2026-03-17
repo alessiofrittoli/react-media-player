@@ -25,7 +25,7 @@ import { useMediaSession } from '@/hooks/useMediaSession'
 import type { Queue } from '@/types'
 
 
-export interface UseMediaPlayerOptions<T extends Queue = Queue> extends UseVolumeOptions,
+export interface UseMediaPlayerOptions<T extends Queue = Queue> extends Omit<UseVolumeOptions, 'fade'>,
 	Omit<UseMediaPlayerControllerOptions<T>, 'volumeRef'>
 {
 	/**

@@ -1,6 +1,6 @@
 # Contributing to React Media Player 🎥
 
-We’re excited that you’re interested in contributing to React Node Module Starter! This guide will help you get started.
+We’re excited that you’re interested in contributing to React Media Player! This guide will help you get started.
 
 ## How to Contribute
 
@@ -91,4 +91,4 @@ Pull requests will be reviewed by maintainers.
 Feedback may be provided; be prepared to make changes if requested.
 Once approved, your contribution will be merged into the main branch.
 
-Thank you for helping improve React Node Module Starter! 🎉
+Thank you for helping improve React Media Player! 🎉

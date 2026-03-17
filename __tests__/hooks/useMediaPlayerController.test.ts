@@ -417,11 +417,6 @@ describe( 'useMediaPlayerController', () => {
 			} )
 
 
-			// it( 'resumes the current paused media matching the given UUID', () => {
-			// 	console.log( 'TODO: check if this test is necessary' )
-			// } )
-
-
 			it( 'transitions to a new media if the given UUID matches a different queued media', () => {
 
 				const { result } = renderHook( () => (

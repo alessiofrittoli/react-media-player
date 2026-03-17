@@ -97,7 +97,7 @@ export const useMediaPlayer = <T extends Queue = Queue>(
 			if ( ! media ) return
 			if ( ! hasNext ) return
 
-			preloadNextMedia()
+			preloadNextMedia( false )
 
 		}, [ media, preload, hasNext, preloadNextMedia ] )
 	} )

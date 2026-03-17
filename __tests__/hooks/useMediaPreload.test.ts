@@ -300,6 +300,29 @@ describe( 'useMediaPreload', () => {
 			expect( audioElement.load ).not.toHaveBeenCalled()
 
 		} )
+
+
+		it( 'allows connection checks overrides', () => {
+
+			controller.getPrevious.mockReturnValue( makeMedia( 'audio', '/prev.mp3' ) )
+
+			const { result } = renderHook( () => useMediaPreload( { controller, checkConnection: false } ) )
+
+			act( () => {
+				result.current.preloadPreviousMedia()
+			} )
+
+			expect( audioElement.preload ).toBe( 'auto' )
+			
+			controller.getPrevious.mockReturnValue( makeMedia( 'audio', '/prev-2.mp3' ) )
+
+			act( () => {
+				result.current.preloadPreviousMedia( true )
+			} )
+
+			expect( audioElement.preload ).toBe( 'metadata' )
+
+		} )
 		
 	} )
 	
@@ -332,6 +355,29 @@ describe( 'useMediaPreload', () => {
 			} )
 
 			expect( audioElement.load ).not.toHaveBeenCalled()
+
+		} )
+
+
+		it( 'allows connection checks overrides', () => {
+
+			controller.getNext.mockReturnValue( makeMedia( 'audio', '/next.mp3' ) )
+
+			const { result } = renderHook( () => useMediaPreload( { controller, checkConnection: false } ) )
+
+			act( () => {
+				result.current.preloadNextMedia()
+			} )
+
+			expect( audioElement.preload ).toBe( 'auto' )
+			
+			controller.getNext.mockReturnValue( makeMedia( 'audio', '/next-2.mp3' ) )
+
+			act( () => {
+				result.current.preloadNextMedia( true )
+			} )
+
+			expect( audioElement.preload ).toBe( 'metadata' )
 
 		} )
 

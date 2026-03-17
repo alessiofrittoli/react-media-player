@@ -16,8 +16,21 @@ interface MediaMap
 	video: HTMLMediaElement
 }
 
+/**
+ * Preload media.
+ * 
+ * @param media The media details. See {@link Media} for more info.
+ * @param checkConnection Defines whether preload is enabled based on user connection quality. Default: {@link UseMediaPreloadOptions.checkConnection}.
+ */
+export type PreloadMediaHandler = ( media: Media, checkConnection?: boolean ) => void
 
-export type PreloadMediaHandler = ( media: Media ) => void
+
+/**
+ * Preload previous or next media.
+ * 
+ * @param checkConnection Defines whether preload is enabled based on user connection quality. Default: {@link UseMediaPreloadOptions.checkConnection}.
+ */
+export type PreloadPreviousOrNextHandler = ( checkConnection?: boolean ) => void
 
 
 export interface UseMediaPreloadOptions<T extends Queue = Queue>
@@ -48,18 +61,21 @@ export interface UseMediaPreload
 	 * Preload media.
 	 * 
 	 * @param media The media details. See {@link Media} for more info.
+	 * @param checkConnection Defines whether preload is enabled based on user connection quality. Default: {@link UseMediaPreloadOptions.checkConnection}.
 	 */
 	preloadMedia: PreloadMediaHandler
 	/**
 	 * Preload previous media.
 	 * 
+	 * @param checkConnection Defines whether preload is enabled based on user connection quality. Default: {@link UseMediaPreloadOptions.checkConnection}.
 	 */
-	preloadPreviousMedia: VoidFunction
+	preloadPreviousMedia: PreloadPreviousOrNextHandler
 	/**
 	 * Preload next media.
 	 * 
+	 * @param checkConnection Defines whether preload is enabled based on user connection quality. Default: {@link UseMediaPreloadOptions.checkConnection}.
 	 */
-	preloadNextMedia: VoidFunction
+	preloadNextMedia: PreloadPreviousOrNextHandler
 }
 
 
@@ -97,14 +113,14 @@ export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPrelo
 	const preloadedSetRef = useRef( new Set<string>() )
 
 
-	const preloadMedia = useCallback<PreloadMediaHandler>( media => {
+	const preloadMedia = useCallback<PreloadMediaHandler>( ( media, _checkConnection = checkConnection ) => {
 
 		const src			= Url.format( media.src )
 		const preloadedSet	= preloadedSetRef.current
 		
 		if ( preloadedSet.has( src ) ) return
 		
-		const preload		= checkConnection ? getPreloadStrategy() : 'auto'
+		const preload		= _checkConnection ? getPreloadStrategy() : 'auto'
 		const mediaMap		= mediaMapRef.current
 		const isAudio		= media.type === 'audio'
 		const mediaMapKey	= isAudio ? 'audio' : 'video'
@@ -137,22 +153,22 @@ export const useMediaPreload = <T extends Queue = Queue>( options: UseMediaPrelo
 	}, [ checkConnection, clampedCacheEntries ] )
 
 
-	const preloadPreviousMedia = useCallback( () => {
+	const preloadPreviousMedia = useCallback( ( checkConnection?: boolean ) => {
 
 		const data = getPrevious()
 		if ( ! data ) return
 		
-		preloadMedia( data )
+		preloadMedia( data, checkConnection )
 
 	}, [ getPrevious, preloadMedia ] )
 
 
-	const preloadNextMedia = useCallback( () => {
+	const preloadNextMedia = useCallback( ( checkConnection?: boolean ) => {
 
 		const data = getNext()
 		if ( ! data ) return
 
-		preloadMedia( data )
+		preloadMedia( data, checkConnection )
 
 	}, [ getNext, preloadMedia ] )
 

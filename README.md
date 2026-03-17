@@ -163,7 +163,7 @@ Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API referenc
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
+import { useAudioPlayer } from "@alessiofrittoli/react-media-player";
 import type {
   MediaChangeHandler,
   PlaybackErrorHandler,
@@ -211,7 +211,7 @@ Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API referenc
 ```tsx
 "use client";
 
-import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
+import { useVideoPlayer } from "@alessiofrittoli/react-media-player";
 import type {
   MediaChangeHandler,
   PlaybackErrorHandler,

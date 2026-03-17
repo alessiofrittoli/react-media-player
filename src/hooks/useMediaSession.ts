@@ -13,7 +13,7 @@ export interface UseMediaSessionOptions
 	/**
 	 * Indicates whether to register the action handlers.
 	 * 
-	 * ⚠️ It is best option to set `register` to `true` once and only after `media.play()` has been called.
+	 * ⚠️ it is better to set `register` to `true` once and only after `media.play()` has been called.
 	 */
 	register: boolean
 	/**
@@ -29,7 +29,7 @@ export interface UseMediaSessionOptions
 	/**
 	 * A custom callback executed once user requested to stop the media through browser/device controls.
 	 * 
-	 * ⚠️ Stop requests always depends on browser support.
+	 * ⚠️ Stop requests always depend on browser support.
 	 */
 	onStop?: MediaSessionActionHandler
 	/**

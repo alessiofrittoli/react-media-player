@@ -1,11 +1,15 @@
 import { VideoPlayerProvider } from '@/store/video/VideoPlayerProvider'
 import { VolumeProvider } from '@/store/volume/VolumeProvider'
-import { HTMLVideoPlayer, HTMLVideoPlayerProps } from '@/components/video/HTMLVideoPlayer'
+import { HTMLVideoPlayer, type HTMLVideoPlayerProps } from '@/components/video/HTMLVideoPlayer'
 import type { UseVideoPlayerOptions } from '@/hooks/useVideoPlayer'
 
 
 export interface VideoPlayerProps extends React.PropsWithChildren<UseVideoPlayerOptions>
 {
+	/**
+	 * Props passed to the rendered `HTMLVideoElement`.
+	 * 
+	 */
 	htmlProps?: HTMLVideoPlayerProps
 }
 

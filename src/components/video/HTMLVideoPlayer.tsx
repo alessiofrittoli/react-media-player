@@ -8,6 +8,7 @@ export type HTMLVideoPlayerProps = Omit<
 	| 'srcObject'
 >
 
+
 export const HTMLVideoPlayer: React.FC<HTMLVideoPlayerProps> = ( { className } ) => (
 	<video
 		// eslint-disable-next-line react-hooks/refs

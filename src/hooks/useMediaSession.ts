@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { useEventListener, useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
 import { updatePositionState } from '@alessiofrittoli/media-utils'
 
 
@@ -117,7 +117,7 @@ export const useMediaSession = ( options: UseMediaSessionOptions ) => {
 	 * Handle play/pause MediaSession requests.
 	 * 
 	 */
-	useUpdateEffect( () => {
+	useEffect( () => {
 
 		if ( ! media || ! register ) return
 

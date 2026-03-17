@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
+import { Tween } from '@alessiofrittoli/math-utils'
 import { useEventListener as _useEventListener } from '@alessiofrittoli/react-hooks'
 import { addItemsUUID } from '@alessiofrittoli/react-hooks/queue/utils'
 import type { UUID } from '@alessiofrittoli/react-hooks/queue'
@@ -8,9 +9,8 @@ import {
 	updatePositionState as _updatePositionState,
 } from '@alessiofrittoli/media-utils'
 
-import { PlayerState, UseMediaPlayerController, useMediaPlayerController, UseMediaPlayerControllerOptions } from '@/hooks/useMediaPlayerController'
+import { PlayerState, useMediaPlayerController } from '@/hooks/useMediaPlayerController'
 import type { Media, Queue } from '@/types'
-import { Tween } from '@alessiofrittoli/math-utils'
 
 
 jest.mock( '@alessiofrittoli/react-hooks', () => ( {
@@ -809,15 +809,15 @@ describe( 'useMediaPlayerController', () => {
 		
 		it( 'does nothing if initial media reference changes and an initial media has been already loaded', () => {
 
-			const { result, rerender } = renderHook<UseMediaPlayerController<Queue>, Partial<UseMediaPlayerControllerOptions<Queue>>>(
-				options => (
-					useMediaPlayerController( { queue, media: mockMedia, initialMedia: queue.items.at( 1 ), ...options } )
-				)
-			)
+			const { result, rerender } = renderHook( options => (
+				useMediaPlayerController( options )
+			), {
+				initialProps: { queue, media: mockMedia, initialMedia: queue.items.at( 1 ) },
+			} )
 
 			
 			act( () => {
-				rerender( { initialMedia: queue.items.at( 2 ) } )
+				rerender( { queue, media: mockMedia, initialMedia: queue.items.at( 2 ) } )
 			} )
 
 

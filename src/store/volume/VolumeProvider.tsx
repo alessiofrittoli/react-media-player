@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { VolumeContext } from '@/store/VolumeContext'
+import { VolumeContext } from '@/store/volume/VolumeContext'
 
 export type VolumeProviderProps = React.PropsWithChildren<{
 	/**

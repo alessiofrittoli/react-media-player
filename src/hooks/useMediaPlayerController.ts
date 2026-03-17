@@ -216,6 +216,9 @@ export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
 }
 
 
+const playPauseEvents: ( keyof HTMLElementEventMap )[] = [ 'play', 'pause' ]
+
+
 /**
  * React media player controller state.
  * 
@@ -424,6 +427,27 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 	 * 
 	 */
 	const next = useCallback<UtilityPlayPauseHandler<T>>( () => playPause( { next: true } ), [ playPause ] )
+
+
+	/**
+	 * Handle native play/pause events on media.
+	 * 
+	 * This events may be fired when using native media controls, Safari PiP controls...
+	 */
+	useEventListener( playPauseEvents, {
+		target		: media,
+		listener	: useCallback( event => {
+			setState( prev => {
+				if ( event.type === 'play' && prev !== PlayerState.PLAYING ) {
+					return PlayerState.PLAYING
+				}
+				if ( event.type === 'pause' && prev !== PlayerState.PAUSED ) {
+					return PlayerState.PAUSED
+				}
+				return prev
+			} )
+		}, [] )
+	} )
 
 
 	/**

@@ -603,8 +603,45 @@ describe( 'useMediaPlayerController', () => {
 
 	} )
 
+	
+	describe( 'media play/pause events', () => {
 
-	describe( 'media timeupdate', () => {
+		it( 'listens for native play/pause events and update player state', () => {
+
+			const { result } = renderHook( () => (
+				useMediaPlayerController( { queue, media: mockMedia } )
+			) )
+
+			const call = useEventListener.mock.calls.at( -3 )
+
+			expect( call?.at( 0 ) ).toEqual( [ 'play', 'pause' ] )
+
+			const { listener } = call?.[ 1 ] || {}
+
+			act( () => {
+				listener?.( new Event( 'play' ) )
+			} )
+			
+			expect( result.current.state ).toBe( PlayerState.PLAYING )
+			
+			act( () => {
+				listener?.( new Event( 'play' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.PLAYING ) // no state update
+
+			act( () => {
+				listener?.( new Event( 'pause' ) )
+			} )
+
+			expect( result.current.state ).toBe( PlayerState.PAUSED )
+
+		} )
+
+	} )
+
+
+	describe( 'media timeupdate events', () => {
 
 		it( 'fades out current media then plays the next one', () => {
 
@@ -619,7 +656,11 @@ describe( 'useMediaPlayerController', () => {
 
 			expect( result.current.current ).toBe( queue.items.at( 0 ) )
 			
-			const { listener } = useEventListener.mock.calls.at( -2 )?.[ 1 ] || {}
+			const call = useEventListener.mock.calls.at( -2 )
+			
+			expect( call?.at( 0 ) ).toBe( 'timeupdate' )
+			
+			const { listener } = call?.[ 1 ] || {}
 
 			act( () => {
 				mockMedia.currentTime = mockMedia.duration / 2
@@ -727,7 +768,7 @@ describe( 'useMediaPlayerController', () => {
 	} )
 
 
-	describe( 'media end', () => {
+	describe( 'media end events', () => {
 
 		it( 'plays next media when current media ends', () => {
 	

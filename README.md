@@ -52,6 +52,7 @@
     - [`useMediaPlayerLoading`](#usemediaplayerloading)
     - [`useMediaPreload`](#usemediapreload)
     - [`useMediaSession`](#usemediasession)
+    - [`useMediaSessionPiP`](#usemediasessionpip)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -669,12 +670,18 @@ through system media controls (e.g., keyboard shortcuts, media control buttons).
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
+import {
+  PlayerState,
+  useMediaSession,
+  useMediaPlayerController,
+} from "@alessiofrittoli/react-media-player";
+
 const { state, hasNext, hasPrevious, togglePlayPause, stop, previous, next } =
   useMediaPlayerController({ queue, media });
 
 useMediaSession({
   media,
-  register: !!state,
+  register: state !== PlayerState.STOPPED,
   onPlay: togglePlayPause,
   onPause: togglePlayPause,
   onStop: stop,
@@ -686,6 +693,83 @@ useMediaSession({
 </details>
 
 ---
+
+##### `useMediaSessionPiP`
+
+Hook into MediaSession Picture-in-Picture requests.
+
+_Usefull resources_
+
+- [Document Picture-in-Picture API](https://npmjs.com/package/@alessiofrittoli/web-utils#document-picture-in-picture)
+- [Media Artwork Picture-in-Picture API](https://www.npmjs.com/package/@alessiofrittoli/media-utils#openartworkpictureinpicture)
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter            | Type                        | Description                                                      |
+| -------------------- | --------------------------- | ---------------------------------------------------------------- |
+| `options`            | `UseMediaSessionPiPOptions` | An object defining options and callbacks.                        |
+| `options.register`   | `boolean`                   | Indicates whether to register the action handler.                |
+|                      |                             | ⚠️ Enter PiP requests always depends on browser support.         |
+| `options.onEnterPiP` | `MediaSessionActionHandler` | A custom callback executed once the user requested to enter PiP. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+"use client";
+
+import { useCallback, useState, type ReactPortal } from "react";
+import {
+  PlayerState,
+  useMediaSessionPiP,
+  useMediaPlayerController,
+} from "@alessiofrittoli/react-media-player";
+import {
+  isDocumentPictureInPictureSupported,
+  openDocumentPictureInPicture,
+  openArtworkPictureInPicture,
+} from "@alessiofrittoli/web-utils";
+import { openArtworkPictureInPicture } from "@alessiofrittoli/media-utils/picture-in-picture";
+
+export const MyComponent: React.FC = () => {
+  const [portal, setPortal] = useState<ReactPortal>();
+  const { state } = useMediaPlayerController({ queue, media });
+
+  const open = useCallback(async () => {
+    if (isDocumentPictureInPictureSupported()) {
+      const { window } = await openDocumentPictureInPicture();
+
+      const reactNode = (
+        <PictureInPictureWindowProvider window={window}>
+          <PictureInPictureComponent />
+        </PictureInPictureWindowProvider>
+      );
+
+      const portal = createPortal(reactNode, window.document.body);
+
+      return;
+    }
+
+    await openArtworkPictureInPicture( ... );
+  }, []);
+
+  useMediaSessionPiP({
+    register: state !== PlayerState.STOPPED,
+    onEnterPiP: open,
+  });
+
+  return portal;
+};
+```
+
+</details>
 
 ---
 

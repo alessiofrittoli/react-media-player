@@ -537,11 +537,11 @@ Type: `UseMediaPreload`
 
 An object containing preload functions.
 
-| Property               | Type                  | Description             |
-| ---------------------- | --------------------- | ----------------------- |
-| `preloadMedia`         | `PreloadMediaHandler` | Preload media.          |
-| `preloadPreviousMedia` | `VoidFunction`        | Preload previous media. |
-| `preloadNextMedia`     | `VoidFunction`        | Preload next media.     |
+| Property               | Type                           | Description             |
+| ---------------------- | ------------------------------ | ----------------------- |
+| `preloadMedia`         | `PreloadMediaHandler`          | Preload media.          |
+| `preloadPreviousMedia` | `PreloadPreviousOrNextHandler` | Preload previous media. |
+| `preloadNextMedia`     | `PreloadPreviousOrNextHandler` | Preload next media.     |
 
 </details>
 
@@ -550,6 +550,8 @@ An object containing preload functions.
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
 
 ```tsx
 "use client";
@@ -625,6 +627,23 @@ export const MyComponent: React.FC = () => {
     </>
   );
 };
+```
+
+---
+
+###### Override `checkConnection` option
+
+Returns 'metadata' for slow-2g or 2g connections
+
+```ts
+import { useMediaPreload } from "@alessiofrittoli/react-media-player";
+
+const { preloadNextMedia } = useMediaPreload({
+  controller,
+  checkConnection = true, // preload strategy may use `metadata` if connection is `slow-2g` or `2g`
+});
+
+preloadNextMedia(false); // preload strategy will be `auto` ignoring previously passed `checkConnection` option
 ```
 
 </details>

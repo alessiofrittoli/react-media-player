@@ -66,7 +66,11 @@ const playPauseEvents: ( keyof HTMLElementEventMap )[] = [ 'play', 'pause' ]
 
 
 /**
- * Easily handle MediaSession handlers and updates.
+ * Hook into MediaSession API for controlling media playback through system controls.
+ * 
+ * Manages MediaSession state and action handlers for play, pause, stop, seek, previous, and next operations.
+ * Synchronizes the native media element's playback state with the MediaSession API and handles user interactions
+ * through system media controls (e.g., keyboard shortcuts, media control buttons).
  * 
  * @param options An object defining options and callbacks. See {@link UseMediaSessionOptions} for more info.
  * 

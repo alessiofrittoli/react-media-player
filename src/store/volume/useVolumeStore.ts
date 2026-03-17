@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { VolumeContext } from '@/store/VolumeContext'
+import { VolumeContext } from '@/store/volume/VolumeContext'
 
 export const useVolumeStore = () => {
 

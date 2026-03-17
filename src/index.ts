@@ -11,9 +11,9 @@ export * from '@/hooks/useMediaSession'
 export * from '@/hooks/useMediaSessionPiP'
 
 
-export * from '@/store/VolumeContext'
-export * from '@/store/VolumeProvider'
-export * from '@/store/useVolumeStore'
+export * from '@/store/volume/VolumeContext'
+export * from '@/store/volume/VolumeProvider'
+export * from '@/store/volume/useVolumeStore'
 
 export * from '@/store/audio/AudioPlayerContext'
 export * from '@/store/audio/AudioPlayerProvider'

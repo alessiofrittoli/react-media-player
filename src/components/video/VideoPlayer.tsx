@@ -1,5 +1,5 @@
 import { VideoPlayerProvider } from '@/store/video/VideoPlayerProvider'
-import { VolumeProvider } from '@/store/VolumeProvider'
+import { VolumeProvider } from '@/store/volume/VolumeProvider'
 import { HTMLVideoPlayer, HTMLVideoPlayerProps } from '@/components/video/HTMLVideoPlayer'
 import type { UseVideoPlayerOptions } from '@/hooks/useVideoPlayer'
 

@@ -1,5 +1,5 @@
 import { AudioPlayerProvider } from '@/store/audio/AudioPlayerProvider'
-import { VolumeProvider } from '@/store/VolumeProvider'
+import { VolumeProvider } from '@/store/volume/VolumeProvider'
 import type { UseAudioPlayerOptions } from '@/hooks/useAudioPlayer'
 
 

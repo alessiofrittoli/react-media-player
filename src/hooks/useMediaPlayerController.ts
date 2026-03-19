@@ -8,6 +8,8 @@ import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/med
 
 import type { UseVolume } from '@/hooks/useVolume'
 import type { Queue, InitialMedia } from '@/types'
+import { inheritMetadatFromQueue } from '@/utils'
+
 
 /**
  * The media player state.
@@ -236,7 +238,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 
 	const {
-		current, currentId, hasNext, jumpTo,
+		current, currentId, hasNext, queue, jumpTo,
 		previous: prevInQueue, next: nextInQueue, ...queueController
 	} = useQueue( {
 		queue	: initialQueue,
@@ -253,7 +255,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 	const playPause = useCallback<PlayPauseHandler<T>>( ( options = {} ) => {
 
 		const {
-			uuid, stop, previous, next, fade = playPauseFadeDuration, queue
+			uuid, stop, previous, next, fade = playPauseFadeDuration, queue: newQueue
 		} = options
 
 		const playingUUID = current?.uuid
@@ -287,7 +289,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			 * - the player is already playing the media matching the given cursor.
 			 */
 			const shouldPause = (
-				( ! previous && ! next && ! queue ) && ( ! uuid || uuid === playingUUID )
+				( ! previous && ! next && ! newQueue ) && ( ! uuid || uuid === playingUUID )
 			)
 
 			if ( shouldPause ) {
@@ -302,9 +304,9 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 			const data = (
 				previous ? prevInQueue() : (
-					! queue && ( next || ! uuid )
+					! newQueue && ( next || ! uuid )
 						? nextInQueue()
-						: jumpTo( { uuid: uuid, queue } )
+						: jumpTo( { uuid: uuid, queue: newQueue } )
 				)
 			)
 
@@ -318,7 +320,9 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 					media.src = Url.format( data.src )
 					media.load()
 
-					playMedia( { media, data, volume, fade, onError( error ) {
+					const metadata = inheritMetadatFromQueue( data, newQueue || queue )
+
+					playMedia( { media, data: metadata, volume, fade, onError( error ) {
 						// alert( 'FIXME: i should be able to easly play next media.' )
 						onPlaybackError?.( error )
 						setState( PlayerState.PAUSED )
@@ -339,9 +343,9 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 		const mediaCursor = uuid || playingUUID
 		const data = (
 			previous ? prevInQueue() : (
-				! queue && ( next || ! mediaCursor )
+				! newQueue && ( next || ! mediaCursor )
 					? nextInQueue()
-					: jumpTo( { uuid: mediaCursor, queue } )
+					: jumpTo( { uuid: mediaCursor, queue: newQueue } )
 			)
 		)
 
@@ -366,8 +370,10 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 				? data.fade?.in ?? fade
 				: fade
 		)
+		
+		const metadata = inheritMetadatFromQueue( data, newQueue || queue )
 
-		playMedia( { media, data, volume, fade: volumeFade, onError( error ) {
+		playMedia( { media, data: metadata, volume, fade: volumeFade, onError( error ) {
 			// alert( 'FIXME: i should be able to easly play next media.' )
 			onPlaybackError?.( error )
 			setState( PlayerState.PAUSED )
@@ -383,8 +389,8 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 		return data
 
 	}, [
-		state, media, current, volumeRef, playPauseFadeDuration,
-		prevInQueue, nextInQueue, jumpTo, onPlaybackError, onMediaChange,
+		media, queue, state, current, playPauseFadeDuration, volumeRef,
+		prevInQueue, nextInQueue, jumpTo, onMediaChange, onPlaybackError,
 	] )
 
 
@@ -484,7 +490,9 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 				media.src = Url.format( data.src )
 				media.load()
 
-				playMedia( { media, data, volume, fade: data.fade?.in ?? playPauseFadeDuration, onError( error ) {
+				const metadata = inheritMetadatFromQueue( data, queue )
+
+				playMedia( { media, data: metadata, volume, fade: data.fade?.in ?? playPauseFadeDuration, onError( error ) {
 					setState( PlayerState.PAUSED )
 					onPlaybackError?.( error )
 				}, } )
@@ -496,7 +504,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 			} } )
 
 		}, [
-			current, media, hasNext, playPauseFadeDuration, volumeRef,
+			current, media, queue, hasNext, playPauseFadeDuration, volumeRef,
 			nextInQueue, stop, onMediaChange, onPlaybackError,
 		] )
 	} )
@@ -543,7 +551,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 		// defined by `useMediaPlayerController`
 		state, isPlaying, playPause, togglePlayPause, stop, previous, next,
 		// defined by `useQueue`
-		current, currentId, hasNext, jumpTo, ...queueController,
+		current, currentId, queue, hasNext, jumpTo, ...queueController,
 	}
 
 }

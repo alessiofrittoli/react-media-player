@@ -60,6 +60,12 @@
     - [`useMediaSession`](#usemediasession)
     - [`useMediaSessionPiP`](#usemediasessionpip)
   - [React Components](#react-components)
+    - [`<AudioPlayer />`](#audioplayer-)
+    - [`<VideoPlayer />`](#videoplayer-)
+    - [`<AudioPlayerProvider />`](#audioplayerprovider-)
+    - [`<VideoPlayerProvider />`](#videoplayerprovider-)
+    - [`<VolumeProvider />`](#volumeprovider-)
+  - [Utils](#utils)
 - [Development](#development)
   - [Install dependencies](#install-dependencies)
   - [Build the source code](#build-the-source-code)
@@ -1225,6 +1231,131 @@ export const AudioPlayerVolumeControl: React.FC = () => {
     </>
   );
 };
+```
+
+</details>
+
+---
+
+#### Utils
+
+##### Queue Utils
+
+This library exposes queue utility functions exported by [`@alessiofrittoli/react-hooks`](https://npmjs.com/package/@alessiofrittoli/react-hooks)
+and defines others documented below.
+
+- See [Queue Utils](https://npmjs.com/package/@alessiofrittoli/react-hooks#queue-utils).
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```ts
+import {
+  addItemUUID,
+  addItemsUUID,
+  maybeAddItemUUID,
+  maybeAddItemsUUID,
+  findIndexByUUID,
+} from "@alessiofrittoli/react-media-player/utils";
+
+...
+```
+
+</details>
+
+---
+
+##### `inheritMetadatFromQueue`
+
+Inherit metadata fields from a queue into a queued item payload.
+
+Please note that the given item fields takes precedence over queue fields.
+
+<details>
+
+<summary style="cursor:pointer">Inherited properties from the given queue</summary>
+
+| Property       | Description                  |
+| -------------- | ---------------------------- |
+| `album`        | The album name of the media. |
+| `artist`       | The artist of the media.     |
+| `artwork`      | The media artwork.           |
+| `videoArtwork` | The media video artwork.     |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description            |
+| --------- | ------------------------- | ---------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                | Default | Description                                    |
+| --------- | ------------------- | ------- | ---------------------------------------------- |
+| `item`    | `QueuedItemType<T>` | -       | The queued item.                               |
+| `queue`   | `T\| NewQueue<T>`   | -       | The queue from which the fields are inherited. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `QueuedItemType<T>`
+
+The queued item with intherited fileds from the given `queue`.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```ts
+import { inheritMetadatFromQueue } from "@alessiofrittoli/react-media-player/utils";
+
+const item = {
+  uuid: "random-uuid",
+  title: "Track 1",
+} as unknown as QueuedItemType<Queue>;
+
+const queue = {
+  album: "Album A",
+  artist: "Artist A",
+  artwork: "artwork-a.jpg",
+  videoArtwork: "video-a.jpg",
+} as unknown as Queue;
+
+inheritMetadatFromQueue(item, queue);
+
+/*
+Returns:
+  {
+    album         : 'Album A',
+    artist        : 'Artist A',
+    artwork       : 'artwork-a.jpg',
+    videoArtwork  : 'video-a.jpg',
+    uuid          : 'random-uuid',
+    title         : 'Track 1',
+  }
+*/
 ```
 
 </details>

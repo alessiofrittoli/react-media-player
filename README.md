@@ -1266,7 +1266,7 @@ import {
 
 ---
 
-##### `inheritMetadatFromQueue`
+##### `inheritDataFromQueue`
 
 Inherit metadata fields from a queue into a queued item payload.
 
@@ -1329,7 +1329,7 @@ The queued item with intherited fileds from the given `queue`.
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import { inheritMetadatFromQueue } from "@alessiofrittoli/react-media-player/utils";
+import { inheritDataFromQueue } from "@alessiofrittoli/react-media-player/utils";
 
 const item = {
   uuid: "random-uuid",
@@ -1343,7 +1343,7 @@ const queue = {
   videoArtwork: "video-a.jpg",
 } as unknown as Queue;
 
-inheritMetadatFromQueue(item, queue);
+inheritDataFromQueue(item, queue);
 
 /*
 Returns:

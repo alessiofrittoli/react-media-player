@@ -18,7 +18,7 @@ describe( 'utils', () => {
 
 	} )
 
-	describe( 'inheritMetadatFromQueue', () => {
+	describe( 'inheritDataFromQueue', () => {
 
 		it( 'inherits metadata from queue when item is missing fields', () => {
 	
@@ -34,7 +34,7 @@ describe( 'utils', () => {
 				videoArtwork	: 'video-a.jpg',
 			} as unknown as Queue
 	
-			const result = utils.inheritMetadatFromQueue( item, queue )
+			const result = utils.inheritDataFromQueue( item, queue )
 	
 			expect( result ).toEqual( {
 				uuid			: 'item-1',
@@ -66,7 +66,7 @@ describe( 'utils', () => {
 				videoArtwork	: 'video-q.jpg',
 			} as unknown as Queue
 	
-			const result = utils.inheritMetadatFromQueue( item, queue )
+			const result = utils.inheritDataFromQueue( item, queue )
 	
 			expect( result ).toEqual( item )
 	

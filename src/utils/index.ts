@@ -27,7 +27,7 @@ export {
  * 
  * @returns The queued item with intherited fileds from the given `queue`.
  */
-export const inheritMetadatFromQueue = <
+export const inheritDataFromQueue = <
 	T extends Queue = Queue
 >( item: QueuedItemType<T>, { album, artist, artwork, videoArtwork }: T | NewQueue<T> ): QueuedItemType<T> => ( {
 	album, artist, artwork, videoArtwork, ...item,

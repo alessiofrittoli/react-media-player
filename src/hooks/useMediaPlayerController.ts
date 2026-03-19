@@ -8,7 +8,7 @@ import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/med
 
 import type { UseVolume } from '@/hooks/useVolume'
 import type { Queue, InitialMedia } from '@/types'
-import { inheritMetadatFromQueue } from '@/utils'
+import { inheritDataFromQueue } from '@/utils'
 
 
 /**
@@ -320,7 +320,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 					media.src = Url.format( data.src )
 					media.load()
 
-					const metadata = inheritMetadatFromQueue( data, newQueue || queue )
+					const metadata = inheritDataFromQueue( data, newQueue || queue )
 
 					playMedia( { media, data: metadata, volume, fade, onError( error ) {
 						// alert( 'FIXME: i should be able to easly play next media.' )
@@ -371,7 +371,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 				: fade
 		)
 		
-		const metadata = inheritMetadatFromQueue( data, newQueue || queue )
+		const metadata = inheritDataFromQueue( data, newQueue || queue )
 
 		playMedia( { media, data: metadata, volume, fade: volumeFade, onError( error ) {
 			// alert( 'FIXME: i should be able to easly play next media.' )
@@ -490,7 +490,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 				media.src = Url.format( data.src )
 				media.load()
 
-				const metadata = inheritMetadatFromQueue( data, queue )
+				const metadata = inheritDataFromQueue( data, queue )
 
 				playMedia( { media, data: metadata, volume, fade: data.fade?.in ?? playPauseFadeDuration, onError( error ) {
 					setState( PlayerState.PAUSED )

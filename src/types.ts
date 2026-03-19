@@ -40,7 +40,7 @@ export type QueuedMedias<T extends Media = Media> = QueuedMedia<T>[]
  * Defines the queue.
  * 
  */
-export type Queue<T extends Media = Media> = GlobalQueue<T>
+export type Queue<T extends Media = Media> = GlobalQueue<T> & Pick<Media, 'artist' | 'album' | 'artwork' | 'videoArtwork'>
 
 
 /**

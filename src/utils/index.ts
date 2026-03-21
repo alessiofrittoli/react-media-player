@@ -29,6 +29,6 @@ export {
  */
 export const inheritDataFromQueue = <
 	T extends Queue = Queue
->( item: QueuedItemType<T>, { album, artist, artwork, videoArtwork }: T | NewQueue<T> ): QueuedItemType<T> => ( {
+>( item: QueuedItemType<T>, { album, artist, artwork, videoArtwork }: Partial<T | NewQueue<T>> ): QueuedItemType<T> => ( {
 	album, artist, artwork, videoArtwork, ...item,
 } )

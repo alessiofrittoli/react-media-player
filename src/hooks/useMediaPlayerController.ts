@@ -248,7 +248,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 	const initialLoadedRef = useRef( false )
 
-	const [ state, setState ] = useState<PlayerState>( PlayerState.STOPPED )
+	const [ state, setState ] = useState<PlayerState>( initialMedia ? PlayerState.PAUSED : PlayerState.STOPPED )
 
 	const isPlaying = state === PlayerState.PLAYING
 	

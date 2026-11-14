@@ -1,6 +1,6 @@
 {
 	"name": "@alessiofrittoli/react-media-player",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "Handle media players with ease",
 	"type": "module",
 	"author": {

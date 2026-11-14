@@ -319,13 +319,13 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 					pauseMedia({
 						media,
 						fade,
-						onEnd() {
+						async onEnd() {
 							media.src = Url.format(data.src)
 							media.load()
 
 							const metadata = inheritDataFromQueue(data, newQueue || queue)
 
-							playMedia({
+							await playMedia({
 								media,
 								data: metadata,
 								volume,
@@ -372,7 +372,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 			const metadata = inheritDataFromQueue(data, newQueue || queue)
 
-			playMedia({
+			void playMedia({
 				media,
 				data: metadata,
 				volume,
@@ -494,7 +494,7 @@ export const useMediaPlayerController = <T extends Queue = Queue>(
 
 					const metadata = inheritDataFromQueue(data, queue)
 
-					playMedia({
+					void playMedia({
 						media,
 						data: metadata,
 						volume,

@@ -1,6 +1,6 @@
+import type { UseVideoPlayer } from '@/hooks/useVideoPlayer'
 import { createContext } from 'react'
-import { UseVideoPlayer } from '@/hooks/useVideoPlayer'
 
-export const VideoPlayerContext = createContext<UseVideoPlayer | undefined>( undefined )
+export const VideoPlayerContext = createContext<UseVideoPlayer | undefined>(undefined)
 
 VideoPlayerContext.displayName = 'VideoPlayerContext'

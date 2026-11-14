@@ -1,19 +1,17 @@
-import { useContext } from 'react'
-import type { Queue } from '@/types'
-import type { UseVideoPlayer } from '@/hooks/useVideoPlayer'
 import { VideoPlayerContext } from '@/store/video/VideoPlayerContext'
+import type { UseVideoPlayer } from '@/hooks/useVideoPlayer'
+import type { Queue } from '@/types'
+import { useContext } from 'react'
 
 export const useVideoPlayerStore = <T extends Queue = Queue>(): UseVideoPlayer<T> => {
+	const result = useContext(VideoPlayerContext)
 
-	const result = useContext( VideoPlayerContext )
-
-	if ( ! result ) {
+	if (!result) {
 		throw new Error(
 			'useVideoPlayerStore has been called outside VideoPlayer Context Provider. ' +
-			'Please make sure to wrap your components with the VideoPlayer Component.'
+				'Please make sure to wrap your components with the VideoPlayer Component.',
 		)
 	}
 
 	return result as unknown as UseVideoPlayer<T>
-	
 }

@@ -1,12 +1,10 @@
 import { createContext } from 'react'
 
-
-export interface VolumeCtx
-{
+export interface VolumeCtx {
 	volume: number
 	setVolume: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const VolumeContext = createContext<VolumeCtx | undefined>( undefined )
+export const VolumeContext = createContext<VolumeCtx | undefined>(undefined)
 
 VolumeContext.displayName = 'VolumeContext'

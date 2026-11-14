@@ -45,6 +45,13 @@
 ### Table of Contents
 
 - [Getting started](#getting-started)
+- [Development](#development)
+  - [Local development](#local-development)
+  - [Production build](#production-build)
+  - [Unit tests](#unit-tests)
+    - [Run tests with coverage](#run-tests-with-coverage)
+  - [Contributing](#contributing)
+  - [Security](#security)
 - [API Reference](#api-reference)
   - [React Hooks](#react-hooks)
     - [`useAudioPlayer`](#useaudioplayer)
@@ -66,13 +73,6 @@
     - [`<VideoPlayerProvider />`](#videoplayerprovider-)
     - [`<VolumeProvider />`](#volumeprovider-)
   - [Utils](#utils)
-- [Development](#development)
-  - [Install dependencies](#install-dependencies)
-  - [Build the source code](#build-the-source-code)
-  - [ESLint](#eslint)
-  - [Jest](#jest)
-- [Contributing](#contributing)
-- [Security](#security)
 - [Credits](#made-with-)
 
 ---
@@ -93,63 +93,141 @@ pnpm i @alessiofrittoli/react-media-player
 
 ---
 
+### Development
+
+Run the following to start development
+
+```shell
+nvm use
+
+pnpm i
+```
+
+#### Local development
+
+Run the following
+
+```shell
+pnpm dev
+```
+
+This will generate unminified output code, sourcemaps and will enable source file watcher.
+
+---
+
+#### Production build
+
+Run the following to create a local production build
+
+```shell
+pnpm build
+```
+
+This will generate minified output code without sourcemaps.
+
+---
+
+#### Unit tests
+
+Run all the defined test suites by running the following:
+
+```shell
+# Run tests and watch file changes.
+pnpm test:watch
+
+# Run tests in a CI environment.
+pnpm test:ci
+```
+
+---
+
+##### Run tests with coverage
+
+An HTTP server is then started to serve coverage files from `./coverage` folder.
+
+⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
+
+```shell
+pnpm test:coverage:serve
+```
+
+---
+
+#### Contributing
+
+Contributions are truly welcome!
+
+Please refer to the [Contributing Doc](./CONTRIBUTING.md) for more information on how to start contributing to this project.
+
+Help keep this project up to date with [GitHub Sponsor][sponsor-url].
+
+[![GitHub Sponsor][sponsor-badge]][sponsor-url]
+
+---
+
+#### Security
+
+If you believe you have found a security vulnerability, we encourage you to **_responsibly disclose this and NOT open a public issue_**. We will investigate all legitimate reports. Email `security@alessiofrittoli.it` to disclose any security vulnerabilities.
+
+---
+
 ### API Reference
 
 #### Defining the queue
 
 ```ts
-import { addItemsUUID } from "@alessiofrittoli/react-media-player/utils";
-import type { Media, Queue } from "@alessiofrittoli/react-media-player";
+import { addItemsUUID } from '@alessiofrittoli/react-media-player/utils'
+import type { Media, Queue } from '@alessiofrittoli/react-media-player'
 
 interface PlaylistMedia extends Media {
-  customProp: boolean;
+  customProp: boolean
 }
 
 interface Playlist extends Queue<PlaylistMedia> {
-  name?: string;
+  name?: string
 }
 
 const queue: Playlist = {
-  name: "Playlist name",
+  name: 'Playlist name',
   items: addItemsUUID<PlaylistMedia>([
     {
-      src: "/song.mp3",
-      type: "audio",
-      title: "Song title",
-      album: "Album name",
-      artist: "Artist name",
+      src: '/song.mp3',
+      type: 'audio',
+      title: 'Song title',
+      album: 'Album name',
+      artist: 'Artist name',
       customProp: true,
       fade: { in: 1000, out: 1000 },
       artwork: [
-        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
-        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
-        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
-        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
-        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
-        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
+        { src: '/artwork-96.png', sizes: 96, type: 'image/png' },
+        { src: '/artwork-128.png', sizes: 128, type: 'image/png' },
+        { src: '/artwork-192.png', sizes: 192, type: 'image/png' },
+        { src: '/artwork-256.png', sizes: 256, type: 'image/png' },
+        { src: '/artwork-384.png', sizes: 384, type: 'image/png' },
+        { src: '/artwork-512.png', sizes: 512, type: 'image/png' },
       ],
-      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
+      videoArtwork: [{ src: '/video-artwork.mp4', type: 'video/mp4' }],
     },
     {
-      src: "/song-2.mp3",
-      type: "audio",
-      title: "Song title 2",
-      album: "Album name",
-      artist: "Artist name",
+      src: '/song-2.mp3',
+      type: 'audio',
+      title: 'Song title 2',
+      album: 'Album name',
+      artist: 'Artist name',
       customProp: true,
       fade: { in: 1000, out: 1000 },
       artwork: [
-        { src: "/artwork-96.png", sizes: 96, type: "image/png" },
-        { src: "/artwork-128.png", sizes: 128, type: "image/png" },
-        { src: "/artwork-192.png", sizes: 192, type: "image/png" },
-        { src: "/artwork-256.png", sizes: 256, type: "image/png" },
-        { src: "/artwork-384.png", sizes: 384, type: "image/png" },
-        { src: "/artwork-512.png", sizes: 512, type: "image/png" },
+        { src: '/artwork-96.png', sizes: 96, type: 'image/png' },
+        { src: '/artwork-128.png', sizes: 128, type: 'image/png' },
+        { src: '/artwork-192.png', sizes: 192, type: 'image/png' },
+        { src: '/artwork-256.png', sizes: 256, type: 'image/png' },
+        { src: '/artwork-384.png', sizes: 384, type: 'image/png' },
+        { src: '/artwork-512.png', sizes: 512, type: 'image/png' },
       ],
-      videoArtwork: [{ src: "/video-artwork.mp4", type: "video/mp4" }],
+      videoArtwork: [{ src: '/video-artwork.mp4', type: 'video/mp4' }],
     },
   ]),
-};
+}
 ```
 
 ---
@@ -169,11 +247,8 @@ Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API referenc
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import { useAudioPlayer } from "@alessiofrittoli/react-media-player";
-import type {
-  MediaChangeHandler,
-  PlaybackErrorHandler,
-} from "@alessiofrittoli/react-media-player";
+import type { MediaChangeHandler, PlaybackErrorHandler } from '@alessiofrittoli/react-media-player'
+import { useAudioPlayer } from '@alessiofrittoli/react-media-player'
 
 useAudioPlayer({
   queue,
@@ -184,9 +259,9 @@ useAudioPlayer({
   repeat: true,
   restartThreshold: 6000,
   volume: 1,
-  onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
-  onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
-});
+  onMediaChange: useCallback<MediaChangeHandler<T>>(media => {}, []),
+  onPlaybackError: useCallback<PlaybackErrorHandler>(error => {}, []),
+})
 ```
 
 - See [Defining the queue](#defining-the-queue) for more info.
@@ -215,13 +290,10 @@ Please refer to [`useMediaPlayer`](#usemediaplayer) doc section for API referenc
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useVideoPlayer } from "@alessiofrittoli/react-media-player";
-import type {
-  MediaChangeHandler,
-  PlaybackErrorHandler,
-} from "@alessiofrittoli/react-media-player";
+import type { MediaChangeHandler, PlaybackErrorHandler } from '@alessiofrittoli/react-media-player'
+import { useVideoPlayer } from '@alessiofrittoli/react-media-player'
 
 export const VideoPlayer: React.FC = () => {
   const { videoRef } = useVideoPlayer({
@@ -233,12 +305,12 @@ export const VideoPlayer: React.FC = () => {
     repeat: true,
     restartThreshold: 6000,
     volume: 1,
-    onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
-    onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
-  });
+    onMediaChange: useCallback<MediaChangeHandler<T>>(media => {}, []),
+    onPlaybackError: useCallback<PlaybackErrorHandler>(error => {}, []),
+  })
 
-  return <video ref={videoRef} />;
-};
+  return <video ref={videoRef} />
+}
 ```
 
 - See [Defining the queue](#defining-the-queue) for more info.
@@ -310,14 +382,11 @@ An object defining media player state and utilities.
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import { useRef } from "react";
-import { useMediaPlayer } from "@alessiofrittoli/react-media-player";
-import type {
-  MediaChangeHandler,
-  PlaybackErrorHandler,
-} from "@alessiofrittoli/react-media-player";
+import type { MediaChangeHandler, PlaybackErrorHandler } from '@alessiofrittoli/react-media-player'
+import { useMediaPlayer } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
-const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
 
 useMediaPlayer({
   media: media.current,
@@ -329,9 +398,9 @@ useMediaPlayer({
   repeat: true,
   restartThreshold: 6000,
   volume: 1,
-  onMediaChange: useCallback<MediaChangeHandler<T>>((media) => {}, []),
-  onPlaybackError: useCallback<PlaybackErrorHandler>((error) => {}, []),
-});
+  onMediaChange: useCallback<MediaChangeHandler<T>>(media => {}, []),
+  onPlaybackError: useCallback<PlaybackErrorHandler>(error => {}, []),
+})
 ```
 
 - See [Defining the queue](#defining-the-queue) for more info.
@@ -395,14 +464,14 @@ An object providing volume control functionality including volume management, mu
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-import { useVolume } from "@alessiofrittoli/react-media-player";
+import { useVolume } from '@alessiofrittoli/react-media-player'
 
 const { setVolume, toggleMute, volumeRef } = useVolume({
   media: HTMLAudioElement | HTMLVideoElement,
   volume: 0.8,
   normalizeVolume: true,
   fade: 300,
-});
+})
 ```
 
 </details>
@@ -501,22 +570,20 @@ An object defining media player state and utilities.
 ###### Toggle play/pause
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
   const { isPlaying, togglePlayPause } = useMediaPlayerController({
     queue,
     media,
-  });
+  })
 
-  return (
-    <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
-  );
-};
+  return <button onClick={togglePlayPause}>{!isPlaying ? 'Play' : 'Pause'}</button>
+}
 ```
 
 ---
@@ -524,21 +591,21 @@ export const MyComponent: React.FC = () => {
 ###### Play previous media
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
   const { hasPrevious, previous } = useMediaPlayerController({
     queue,
     media,
     repeat: false,
-  });
+  })
 
-  return hasPrevious && <button onClick={previous}>Previous song</button>;
-};
+  return hasPrevious && <button onClick={previous}>Previous song</button>
+}
 ```
 
 ---
@@ -546,21 +613,21 @@ export const MyComponent: React.FC = () => {
 ###### Play next media
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
+  const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
   const { hasNext, next } = useMediaPlayerController({
     queue,
     media,
     repeat: false,
-  });
+  })
 
-  return hasNext && <button onClick={next}>Next song</button>;
-};
+  return hasNext && <button onClick={next}>Next song</button>
+}
 ```
 
 ---
@@ -568,25 +635,25 @@ export const MyComponent: React.FC = () => {
 ###### Play a queued media matching given UUID
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
-  const { playPause } = useMediaPlayerController({ queue, media });
+  const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
+  const { playPause } = useMediaPlayerController({ queue, media })
 
   return (
     <button
       onClick={() => {
-        playPause({ uuid: queue.items.at(1)?.uuid });
+        playPause({ uuid: queue.items.at(1)?.uuid })
       }}
     >
       Play {queue.items.at(1)?.title}
     </button>
-  );
-};
+  )
+}
 ```
 
 ---
@@ -594,25 +661,25 @@ export const MyComponent: React.FC = () => {
 ###### Update queue and play a queued media matching given UUID
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useMediaPlayerController } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerController } from '@alessiofrittoli/react-media-player'
+import { useRef } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const media = useRef(typeof window !== "undefined" ? new Audio() : undefined);
-  const { playPause } = useMediaPlayerController({ queue, media });
+  const media = useRef(typeof window !== 'undefined' ? new Audio() : undefined)
+  const { playPause } = useMediaPlayerController({ queue, media })
 
   return (
     <button
       onClick={() => {
-        playPause({ queue: queue2, uuid: queue2.items.at(1)?.uuid });
+        playPause({ queue: queue2, uuid: queue2.items.at(1)?.uuid })
       }}
     >
       Play {queue2.items.at(1)?.title}
     </button>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -663,52 +730,48 @@ An object defining loading and error states.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useMediaPlayerLoading } from "@alessiofrittoli/react-media-player";
+import { useMediaPlayerLoading } from '@alessiofrittoli/react-media-player'
+import { useEffect, useState } from 'react'
 
 export const MyComponent: React.FC = () => {
-  const [media, setMedia] = useState<HTMLAudioElement>();
+  const [media, setMedia] = useState<HTMLAudioElement>()
 
-  const { isLoading, error } = useMediaPlayerLoading({ media });
+  const { isLoading, error } = useMediaPlayerLoading({ media })
 
   useEffect(() => {
-    setMedia(new Audio("/song.mp3"));
-  }, []);
+    setMedia(new Audio('/song.mp3'))
+  }, [])
 
   return (
     <>
       {isLoading && <span>Loading...</span>}
       {!isLoading && !error && <span>Loaded</span>}
       {error?.code === MediaError?.MEDIA_ERR_ABORTED && (
-        <span>
-          The fetching of the associated resource was aborted by the user's
-          request.
-        </span>
+        <span>The fetching of the associated resource was aborted by the user's request.</span>
       )}
       {error?.code === MediaError?.MEDIA_ERR_NETWORK && (
         <span>
-          Some kind of network error occurred which prevented the media from
-          being successfully fetched, despite having previously been available.
+          Some kind of network error occurred which prevented the media from being successfully fetched,
+          despite having previously been available.
         </span>
       )}
       {error?.code === MediaError?.MEDIA_ERR_DECODE && (
         <span>
-          Despite having previously been determined to be usable, an error
-          occurred while trying to decode the media resource, resulting in an
-          error.
+          Despite having previously been determined to be usable, an error occurred while trying to decode the
+          media resource, resulting in an error.
         </span>
       )}
       {error?.code === MediaError?.MEDIA_ERR_SRC_NOT_SUPPORTED && (
         <span>
-          The associated resource or media provider object (such as a
-          MediaStream) has been found to be unsuitable.
+          The associated resource or media provider object (such as a MediaStream) has been found to be
+          unsuitable.
         </span>
       )}
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -773,79 +836,78 @@ An object containing preload functions.
 ###### Basic usage
 
 ```tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { addItemsUUID } from "@alessiofrittoli/react-media-player/utils";
 import {
   useMediaPlayerController,
   useMediaPreload,
   type Media,
   type Queue,
-} from "@alessiofrittoli/react-media-player";
+} from '@alessiofrittoli/react-media-player'
+import { addItemsUUID } from '@alessiofrittoli/react-media-player/utils'
+import { useEffect, useState } from 'react'
 
 interface Playlist extends Queue<Media> {
-  name?: string;
+  name?: string
 }
 
 const queue: Playlist = {
-  name: "Playlist name",
+  name: 'Playlist name',
   items: addItemsUUID<Media>([
     {
-      src: "/song-1.mp3",
-      type: "audio",
+      src: '/song-1.mp3',
+      type: 'audio',
     },
     {
-      src: "/song-2.mp3",
-      type: "audio",
+      src: '/song-2.mp3',
+      type: 'audio',
     },
   ]),
-};
+}
 
 export const MyComponent: React.FC = () => {
-  const [media, setMedia] = useState<HTMLAudioElement>();
+  const [media, setMedia] = useState<HTMLAudioElement>()
 
-  const controller = useMediaPlayerController({ queue, media });
+  const controller = useMediaPlayerController({ queue, media })
   const { preloadPreviousMedia, preloadNextMedia } = useMediaPreload({
     controller,
-  });
-  const { isPlaying, hasPrevious, hasNext, previous, next, togglePlayPause } =
-    controller;
+  })
+  const { isPlaying, hasPrevious, hasNext, previous, next, togglePlayPause } = controller
 
   useEffect(() => {
-    setMedia(new Audio());
-  }, []);
+    setMedia(new Audio())
+  }, [])
 
   return (
     <>
       <button
         onMouseEnter={() => {
-          if (!hasPrevious) return;
-          preloadPreviousMedia();
+          if (!hasPrevious) return
+          preloadPreviousMedia()
         }}
         onClick={() => {
-          if (!hasPrevious) return;
-          previous();
+          if (!hasPrevious) return
+          previous()
         }}
       >
         Previous
       </button>
-      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+      <button onClick={togglePlayPause}>{!isPlaying ? 'Play' : 'Pause'}</button>
       <button
         onMouseEnter={() => {
-          if (!hasNext) return;
-          preloadNextMedia();
+          if (!hasNext) return
+          preloadNextMedia()
         }}
         onClick={() => {
-          if (!hasNext) return;
-          next();
+          if (!hasNext) return
+          next()
         }}
       >
         Next
       </button>
     </>
-  );
-};
+  )
+}
 ```
 
 ---
@@ -855,14 +917,14 @@ export const MyComponent: React.FC = () => {
 Returns 'metadata' for slow-2g or 2g connections
 
 ```ts
-import { useMediaPreload } from "@alessiofrittoli/react-media-player";
+import { useMediaPreload } from '@alessiofrittoli/react-media-player'
 
 const { preloadNextMedia } = useMediaPreload({
   controller,
   checkConnection = true, // preload strategy may use `metadata` if connection is `slow-2g` or `2g`
-});
+})
 
-preloadNextMedia(false); // preload strategy will be `auto` ignoring previously passed `checkConnection` option
+preloadNextMedia(false) // preload strategy will be `auto` ignoring previously passed `checkConnection` option
 ```
 
 </details>
@@ -908,14 +970,12 @@ through system media controls (e.g., keyboard shortcuts, media control buttons).
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import {
-  PlayerState,
-  useMediaSession,
-  useMediaPlayerController,
-} from "@alessiofrittoli/react-media-player";
+import { PlayerState, useMediaSession, useMediaPlayerController } from '@alessiofrittoli/react-media-player'
 
-const { state, hasNext, hasPrevious, togglePlayPause, stop, previous, next } =
-  useMediaPlayerController({ queue, media });
+const { state, hasNext, hasPrevious, togglePlayPause, stop, previous, next } = useMediaPlayerController({
+  queue,
+  media,
+})
 
 useMediaSession({
   media,
@@ -925,7 +985,7 @@ useMediaSession({
   onStop: stop,
   onPrev: hasPrevious ? previous : undefined,
   onNext: hasNext ? next : undefined,
-});
+})
 ```
 
 </details>
@@ -1040,13 +1100,13 @@ This allows you to easily mix-up client and server components passed to the Comp
 ###### Basic usage
 
 ```tsx
-import { AudioPlayer } from "@alessiofrittoli/react-media-player";
+import { AudioPlayer } from '@alessiofrittoli/react-media-player'
 
 export const AppAudioPlayer: React.FC = () => (
   <AudioPlayer queue={queue}>
     <AudioPlayerControls />
   </AudioPlayer>
-);
+)
 ```
 
 ---
@@ -1054,19 +1114,19 @@ export const AppAudioPlayer: React.FC = () => (
 ###### Accessing APIs in custom UI controls
 
 ```tsx
-import { useCallback } from "react";
-import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
-import { useAudioPlayerStore } from "@alessiofrittoli/react-media-player";
+import { useAudioPlayerStore } from '@alessiofrittoli/react-media-player'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 export const AudioPlayerControls: React.FC = () => {
-  const { isPlaying, togglePlayPause } = useAudioPlayerStore();
+  const { isPlaying, togglePlayPause } = useAudioPlayerStore()
 
   return (
     <>
-      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+      <button onClick={togglePlayPause}>{!isPlaying ? 'Play' : 'Pause'}</button>
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -1102,13 +1162,13 @@ This allows you to easily mix-up client and server components passed to the Comp
 ###### Basic usage
 
 ```tsx
-import { VideoPlayer } from "@alessiofrittoli/react-media-player";
+import { VideoPlayer } from '@alessiofrittoli/react-media-player'
 
 export const AppVideoPlayer: React.FC = () => (
   <VideoPlayer queue={queue}>
     <VideoPlayerControls />
   </VideoPlayer>
-);
+)
 ```
 
 ---
@@ -1116,21 +1176,21 @@ export const AppVideoPlayer: React.FC = () => (
 ###### Accessing APIs in custom UI controls
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
-import { useVideoPlayerStore } from "@alessiofrittoli/react-media-player";
+import { useVideoPlayerStore } from '@alessiofrittoli/react-media-player'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 export const VideoPlayerControls: React.FC = () => {
-  const { isPlaying, togglePlayPause } = useVideoPlayerStore();
+  const { isPlaying, togglePlayPause } = useVideoPlayerStore()
 
   return (
     <>
-      <button onClick={togglePlayPause}>{!isPlaying ? "Play" : "Pause"}</button>
+      <button onClick={togglePlayPause}>{!isPlaying ? 'Play' : 'Pause'}</button>
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -1164,64 +1224,60 @@ so no extra action is required by you.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
-import {
-  AudioPlayer,
-  useVolumeStore,
-  useAudioPlayerStore,
-} from "@alessiofrittoli/react-media-player";
+import { AudioPlayer, useVolumeStore, useAudioPlayerStore } from '@alessiofrittoli/react-media-player'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 export const AppAudioPlayer: React.FC = () => (
   <AudioPlayer queue={queue}>
     <AudioPlayerVolumeControl />
   </AudioPlayer>
-);
+)
 
 export const AudioPlayerVolumeControl: React.FC = () => {
-  const { volume, setVolume: commitVolume } = useVolumeStore();
+  const { volume, setVolume: commitVolume } = useVolumeStore()
 
-  const { initialVolume, setVolume, toggleMute } = useAudioPlayerStore();
+  const { initialVolume, setVolume, toggleMute } = useAudioPlayerStore()
 
-  const isMute = volume <= 0;
+  const isMute = volume <= 0
 
   const updateVolume = useCallback(
     (volume: number) => {
-      setVolume(volume / 100);
-      commitVolume(volume / 100);
+      setVolume(volume / 100)
+      commitVolume(volume / 100)
     },
     [setVolume, commitVolume],
-  );
+  )
 
   const toggleMuteHandler = useCallback(() => {
-    commitVolume(toggleMute());
-  }, [toggleMute, commitVolume]);
+    commitVolume(toggleMute())
+  }, [toggleMute, commitVolume])
 
   useUpdateEffect(() => {
-    updateVolume(initialVolume * 100);
-  }, [initialVolume, updateVolume]);
+    updateVolume(initialVolume * 100)
+  }, [initialVolume, updateVolume])
 
   const onChangeHandler = useCallback<React.ChangeEventHandler>(
-    (event) => {
-      const input = event.target as HTMLInputElement;
-      const value = Number(input.value);
+    event => {
+      const input = event.target as HTMLInputElement
+      const value = Number(input.value)
 
-      if (isNaN(value)) return;
+      if (isNaN(value)) return
 
-      const percent = (value * 100) / 100;
+      const percent = (value * 100) / 100
 
-      updateVolume(percent);
+      updateVolume(percent)
     },
     [updateVolume],
-  );
+  )
 
   return (
     <>
-      <button onClick={toggleMuteHandler}>{!isMute ? "Mute" : "Unmute"}</button>
+      <button onClick={toggleMuteHandler}>{!isMute ? 'Mute' : 'Unmute'}</button>
       <input
-        type="range"
+        type='range'
         value={volume * 100}
         max={100}
         step={1}
@@ -1229,8 +1285,8 @@ export const AudioPlayerVolumeControl: React.FC = () => {
         aria-valuetext={`${volume * 100}%`}
       />
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -1329,21 +1385,21 @@ The queued item with intherited fileds from the given `queue`.
 <summary style="cursor:pointer">Usage</summary>
 
 ```ts
-import { inheritDataFromQueue } from "@alessiofrittoli/react-media-player/utils";
+import { inheritDataFromQueue } from '@alessiofrittoli/react-media-player/utils'
 
 const item = {
-  uuid: "random-uuid",
-  title: "Track 1",
-} as unknown as QueuedItemType<Queue>;
+  uuid: 'random-uuid',
+  title: 'Track 1',
+} as unknown as QueuedItemType<Queue>
 
 const queue = {
-  album: "Album A",
-  artist: "Artist A",
-  artwork: "artwork-a.jpg",
-  videoArtwork: "video-a.jpg",
-} as unknown as Queue;
+  album: 'Album A',
+  artist: 'Artist A',
+  artwork: 'artwork-a.jpg',
+  videoArtwork: 'video-a.jpg',
+} as unknown as Queue
 
-inheritDataFromQueue(item, queue);
+inheritDataFromQueue(item, queue)
 
 /*
 Returns:
@@ -1361,78 +1417,6 @@ Returns:
 </details>
 
 ---
-
-### Development
-
-#### Install dependencies
-
-```bash
-npm install
-```
-
-or using `pnpm`
-
-```bash
-pnpm i
-```
-
-#### Build the source code
-
-Run the following command to test and build code for distribution.
-
-```bash
-pnpm build
-```
-
-#### [ESLint](https://www.npmjs.com/package/eslint)
-
-Run warnings and errors checks.
-
-```bash
-pnpm lint
-```
-
-#### [Jest](https://npmjs.com/package/jest)
-
-Run all the defined test suites by running the following:
-
-```bash
-# Run tests and watch file changes.
-pnpm test:watch
-
-# Run tests in a CI environment.
-pnpm test:ci
-```
-
-- See [`package.json`](./package.json) file scripts for more info.
-
-Run tests with coverage.
-
-An HTTP server is then started to serve coverage files from `./coverage` folder.
-
-⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
-
-```bash
-pnpm test:coverage:serve
-```
-
----
-
-### Contributing
-
-Contributions are truly welcome!
-
-Please refer to the [Contributing Doc](./CONTRIBUTING.md) for more information on how to start contributing to this project.
-
-Help keep this project up to date with [GitHub Sponsor][sponsor-url].
-
-[![GitHub Sponsor][sponsor-badge]][sponsor-url]
-
----
-
-### Security
-
-If you believe you have found a security vulnerability, we encourage you to **_responsibly disclose this and NOT open a public issue_**. We will investigate all legitimate reports. Email `security@alessiofrittoli.it` to disclose any security vulnerabilities.
 
 ### Made with ☕
 

@@ -1,557 +1,578 @@
+import type {
+	UseQueue,
+	NewQueue,
+	QueuedItemType,
+	UUID,
+	UseQueueOptions,
+} from '@alessiofrittoli/react-hooks/queue'
+import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/media-utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Url } from '@alessiofrittoli/url-utils'
-import { Tween } from '@alessiofrittoli/math-utils'
 import { useEventListener } from '@alessiofrittoli/react-hooks'
 import { useQueue } from '@alessiofrittoli/react-hooks/queue'
-import type { UseQueue, NewQueue, QueuedItemType, UUID, UseQueueOptions } from '@alessiofrittoli/react-hooks/queue'
-import { pauseMedia, playMedia, updatePositionState } from '@alessiofrittoli/media-utils'
-
+import { Tween } from '@alessiofrittoli/math-utils'
 import type { UseVolume } from '@/hooks/useVolume'
 import type { Queue, InitialMedia } from '@/types'
+import { Url } from '@alessiofrittoli/url-utils'
 import { inheritDataFromQueue } from '@/utils'
-
 
 /**
  * The media player state.
- * 
+ *
  */
-export enum PlayerState
-{
+export enum PlayerState {
 	/**
 	 * The media player is currently playing.
-	 * 
+	 *
 	 */
 	PLAYING = 'playing',
 	/**
 	 * The media player is currently paused.
-	 * 
+	 *
 	 */
 	PAUSED = 'paused',
 	/**
 	 * The media player hasn't been started yet or has been stopped.
-	 * 
+	 *
 	 */
 	STOPPED = 'stopped',
 }
 
-
 /**
  * Defines play/pause media handler options.
- * 
+ *
  */
 export type PlayPauseHandlerOptions<T extends Queue = Queue> = {
 	/**
 	 * Volume fade in milliseconds applied when soundtrack start playing/get paused.
-	 * 
+	 *
 	 * @default 200
 	 */
 	fade?: number
 	/**
 	 * A new queue to set.
-	 * 
+	 *
 	 */
 	queue?: NewQueue<T>
 } & (
 	| {
-		/**
-		 * Play specific media with the given `uuid`.
-		 * 
-		 */
-		uuid: UUID
-		stop?: never
-		previous?: never
-		next?: never
-	} | {
-		uuid?: never
-		/**
-		 * Stop media player.
-		 * 
-		 */
-		stop?: boolean
-		/**
-		 * Play previous media.
-		 * 
-		 */
-		previous?: boolean
-		/**
-		 * Play next media.
-		 * 
-		 */
-		next?: boolean
-	}
+			/**
+			 * Play specific media with the given `uuid`.
+			 *
+			 */
+			uuid: UUID
+			stop?: never
+			previous?: never
+			next?: never
+	  }
+	| {
+			uuid?: never
+			/**
+			 * Stop media player.
+			 *
+			 */
+			stop?: boolean
+			/**
+			 * Play previous media.
+			 *
+			 */
+			previous?: boolean
+			/**
+			 * Play next media.
+			 *
+			 */
+			next?: boolean
+	  }
 )
-
 
 /**
  * Play/pause/stop the media player or start another media.
- * 
+ *
  * @param options An object specifing play/pause options. See {@link PlayPauseHandlerOptions}.
  * @returns The queued item being played.
  */
 export type PlayPauseHandler<T extends Queue = Queue> = (
-	options?: PlayPauseHandlerOptions<T>
+	options?: PlayPauseHandlerOptions<T>,
 ) => QueuedItemType<T> | undefined
-
 
 export type UtilityPlayPauseHandler<T extends Queue = Queue> = () => ReturnType<PlayPauseHandler<T>>
 
-
 /**
  * A callback executed when media player is playing and transitioning to another media.
- * 
+ *
  * @param info An object containing new playing media data.
  */
-export type MediaChangeHandler<
-	T extends Queue = Queue
-> = ( info: { data: QueuedItemType<T> } ) => void
-
+export type MediaChangeHandler<T extends Queue = Queue> = (info: { data: QueuedItemType<T> }) => void
 
 /**
  * A callback executed when an error occurs when playing a media.
- * 
+ *
  * @param error The MediaError interface representing the occured error.
  */
-export type PlaybackErrorHandler = ( error: MediaError ) => void
-
+export type PlaybackErrorHandler = (error: MediaError) => void
 
 /**
  * Configuration options for the `useMediaPlayerController` hook.
- * 
+ *
  */
 export interface UseMediaPlayerControllerOptions<T extends Queue>
-	extends Partial<Pick<UseVolume, 'volumeRef'>>,
-	Pick<UseQueueOptions, 'repeat'>
-{
+	extends Partial<Pick<UseVolume, 'volumeRef'>>, Pick<UseQueueOptions, 'repeat'> {
 	/**
 	 * The HTMLMediaElement.
-	 * 
+	 *
 	 */
 	media?: HTMLMediaElement
 	/**
 	 * An object describing the queue.
-	 * 
+	 *
 	 */
 	queue: T
 	/**
 	 * Defines the initial queue media to load.
-	 * 
+	 *
 	 */
 	initialMedia?: InitialMedia<QueuedItemType<T>>
 	/**
 	 * Indicates time in milliseconds after that the media restart to `0` rather than playing the previous one.
-	 * 
+	 *
 	 * This only take effect when `previous()` method is called.
-	 * 
+	 *
 	 * You can opt-out by this functionality by setting `restartThreshold` to `false` or `0`.
-	 * 
+	 *
 	 * @default 5000
 	 */
 	restartThreshold?: number | false
 	/**
 	 * Volume fade in milliseconds applied when soundtrack start playing/get paused.
-	 * 
+	 *
 	 * @default 200
 	 */
 	playPauseFadeDuration?: number
 	/**
 	 * A callback executed when media player is playing and transitioning to another media.
-	 * 
+	 *
 	 * @param info An object containing new playing media data.
 	 */
 	onMediaChange?: MediaChangeHandler<T>
 	/**
 	 * A callback executed when an error occurs when playing a media.
-	 * 
+	 *
 	 * @param error The MediaError interface representing the occured error.
 	 */
 	onPlaybackError?: PlaybackErrorHandler
 }
 
-
 /**
  * The return type of the `useMediaPlayerController` hook.
- * 
+ *
  */
-export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<UseQueue<T>, 'previous' | 'next'>
-{
+export interface UseMediaPlayerController<T extends Queue = Queue> extends Omit<
+	UseQueue<T>,
+	'previous' | 'next'
+> {
 	/**
 	 * Defines the current media player state.
-	 * 
+	 *
 	 */
 	state: PlayerState
 	/**
 	 * Defines whether the media player is currently playing.
-	 * 
+	 *
 	 */
 	isPlaying: boolean
 	/**
 	 * Play/pause/stop the media player or start another media.
-	 * 
+	 *
 	 * @param options An object specifing play/pause options. See {@link PlayPauseHandlerOptions}.
 	 * @returns The queued item being played.
 	 */
 	playPause: PlayPauseHandler<T>
 	/**
 	 * Toggle play/pause.
-	 * 
+	 *
 	 * @returns The queued item being played/paused.
 	 */
 	togglePlayPause: UtilityPlayPauseHandler<T>
 	/**
 	 * Stop media player.
-	 * 
+	 *
 	 * @returns The queued item that was playing before stopping the media player if any.
 	 */
 	stop: UtilityPlayPauseHandler<T>
 	/**
 	 * Play previous queued media.
-	 * 
+	 *
 	 * @returns The queued item being played if any.
 	 */
 	previous: UtilityPlayPauseHandler<T>
 	/**
 	 * Play next queued media.
-	 * 
+	 *
 	 * @returns The queued item being played if any.
 	 */
 	next: UtilityPlayPauseHandler<T>
 }
 
-
-const playPauseEvents: ( keyof HTMLElementEventMap )[] = [ 'play', 'pause' ]
-
+const playPauseEvents: (keyof HTMLElementEventMap)[] = ['play', 'pause']
 
 /**
  * React media player controller state.
- * 
+ *
  * @param	options An object defining media player controller options. See {@link UseMediaPlayerControllerOptions} for more info.
  * @returns	An object defining media player state and utilities. See {@link UseMediaPlayerController} for more info.
  */
 export const useMediaPlayerController = <T extends Queue = Queue>(
-	options: UseMediaPlayerControllerOptions<T>
+	options: UseMediaPlayerControllerOptions<T>,
 ): UseMediaPlayerController<T> => {
-
 	const {
-		media, queue: initialQueue, volumeRef, initialMedia,
-		restartThreshold = 5000, playPauseFadeDuration, repeat, onMediaChange, onPlaybackError,
+		media,
+		queue: initialQueue,
+		volumeRef,
+		initialMedia,
+		restartThreshold = 5000,
+		playPauseFadeDuration,
+		repeat,
+		onMediaChange,
+		onPlaybackError,
 	} = options
 
-
 	const {
-		current, currentId, hasNext, queue, jumpTo,
-		previous: prevInQueue, next: nextInQueue, ...queueController
-	} = useQueue( {
-		queue	: initialQueue,
-		current	: initialMedia,
-		repeat	: repeat,
-	} )
+		current,
+		currentId,
+		hasNext,
+		queue,
+		jumpTo,
+		previous: prevInQueue,
+		next: nextInQueue,
+		...queueController
+	} = useQueue({
+		queue: initialQueue,
+		current: initialMedia,
+		repeat: repeat,
+	})
 
-	const initialLoadedRef = useRef( false )
+	const initialLoadedRef = useRef(false)
 
-	const [ state, setState ] = useState<PlayerState>( initialMedia ? PlayerState.PAUSED : PlayerState.STOPPED )
+	const [state, setState] = useState<PlayerState>(initialMedia ? PlayerState.PAUSED : PlayerState.STOPPED)
 
 	const isPlaying = state === PlayerState.PLAYING
-	
-	const playPause = useCallback<PlayPauseHandler<T>>( ( options = {} ) => {
 
-		const {
-			uuid, stop, previous, next, fade = playPauseFadeDuration, queue: newQueue
-		} = options
+	const playPause = useCallback<PlayPauseHandler<T>>(
+		// eslint-disable-next-line react-hooks/immutability
+		(options = {}) => {
+			const { uuid, stop, previous, next, fade = playPauseFadeDuration, queue: newQueue } = options
 
-		const playingUUID = current?.uuid
+			const playingUUID = current?.uuid
 
-		if ( ! media ) return current
+			if (!media) return current
 
-		if ( stop ) {
-			pauseMedia( { media, fade, onEnd() {
-				navigator.mediaSession.playbackState = 'none'
-			}, } )
-			setState( PlayerState.STOPPED )
-			return current
-		}
-
-		const volume = volumeRef?.current ?? 1
-
-
-		/**
-		 * Indicates whether the current media is playing.
-		 * 
-		 */
-		const isPlaying	= state === PlayerState.PLAYING
-
-
-		if ( isPlaying ) {
-			/**
-			 * Should pause media player if:
-			 * - not requesting previous or next media.
-			 * - not requesting to set a new queue.
-			 * - media is already playing and no specific cursor has been provided.
-			 * - the player is already playing the media matching the given cursor.
-			 */
-			const shouldPause = (
-				( ! previous && ! next && ! newQueue ) && ( ! uuid || uuid === playingUUID )
-			)
-
-			if ( shouldPause ) {
-				/**
-				 * fade-out current playing media and pause it.
-				 * 
-				 */
-				pauseMedia( { media, fade } )
-				setState( PlayerState.PAUSED )
+			if (stop) {
+				pauseMedia({
+					media,
+					fade,
+					onEnd() {
+						navigator.mediaSession.playbackState = 'none'
+					},
+				})
+				setState(PlayerState.STOPPED)
 				return current
 			}
 
-			const data = (
-				previous ? prevInQueue() : (
-					! newQueue && ( next || ! uuid )
-						? nextInQueue()
-						: jumpTo( { uuid: uuid, queue: newQueue } )
-				)
-			)
+			const volume = volumeRef?.current ?? 1
 
-			if ( data ) {
+			/**
+			 * Indicates whether the current media is playing.
+			 *
+			 */
+			const isPlaying = state === PlayerState.PLAYING
 
+			if (isPlaying) {
 				/**
-				 * fade-out current playing media and start requested media.
-				 * 
+				 * Should pause media player if:
+				 * - not requesting previous or next media.
+				 * - not requesting to set a new queue.
+				 * - media is already playing and no specific cursor has been provided.
+				 * - the player is already playing the media matching the given cursor.
 				 */
-				pauseMedia( { media, fade, onEnd() {
-					media.src = Url.format( data.src )
-					media.load()
+				const shouldPause = !previous && !next && !newQueue && (!uuid || uuid === playingUUID)
 
-					const metadata = inheritDataFromQueue( data, newQueue || queue )
+				if (shouldPause) {
+					/**
+					 * fade-out current playing media and pause it.
+					 *
+					 */
+					pauseMedia({ media, fade })
+					setState(PlayerState.PAUSED)
+					return current
+				}
 
-					playMedia( { media, data: metadata, volume, fade, onError( error ) {
-						// alert( 'FIXME: i should be able to easly play next media.' )
-						onPlaybackError?.( error )
-						setState( PlayerState.PAUSED )
-					} } )
+				const data = previous
+					? prevInQueue()
+					: !newQueue && (next || !uuid)
+						? nextInQueue()
+						: jumpTo({ uuid: uuid, queue: newQueue })
 
-					onMediaChange?.( { data } )
-				} } )
+				if (data) {
+					/**
+					 * fade-out current playing media and start requested media.
+					 *
+					 */
+					pauseMedia({
+						media,
+						fade,
+						onEnd() {
+							media.src = Url.format(data.src)
+							media.load()
 
-				setState( PlayerState.PLAYING )
+							const metadata = inheritDataFromQueue(data, newQueue || queue)
 
-				return data
+							playMedia({
+								media,
+								data: metadata,
+								volume,
+								fade,
+								onError(error) {
+									// alert( 'FIXME: i should be able to easly play next media.' )
+									onPlaybackError?.(error)
+									setState(PlayerState.PAUSED)
+								},
+							})
 
+							onMediaChange?.({ data })
+						},
+					})
+
+					setState(PlayerState.PLAYING)
+
+					return data
+				}
 			}
 
-		}
+			const mediaCursor = uuid || playingUUID
 
-
-		const mediaCursor = uuid || playingUUID
-		const data = (
-			previous ? prevInQueue() : (
-				! newQueue && ( next || ! mediaCursor )
+			const data = previous
+				? prevInQueue()
+				: !newQueue && (next || !mediaCursor)
 					? nextInQueue()
-					: jumpTo( { uuid: mediaCursor, queue: newQueue } )
-			)
-		)
+					: jumpTo({ uuid: mediaCursor, queue: newQueue })
 
-		if ( ! data ) {
-			setState( PlayerState.STOPPED )
-			return
-		}
+			if (!data) {
+				setState(PlayerState.STOPPED)
+				return
+			}
 
-		const playingADifferentMedia = playingUUID !== data.uuid
+			const playingADifferentMedia = playingUUID !== data.uuid
 
-		if (
-			playingADifferentMedia ||
-			media.duration === Infinity
-		) {
-			// eslint-disable-next-line react-hooks/immutability
-			media.src = Url.format( data.src )
-			media.load()
-		}
+			if (playingADifferentMedia || media.duration === Infinity) {
+				// eslint-disable-next-line react-hooks/immutability
+				media.src = Url.format(data.src)
+				media.load()
+			}
 
-		const volumeFade = (
-			state === PlayerState.STOPPED
-				? data.fade?.in ?? fade
-				: fade
-		)
-		
-		const metadata = inheritDataFromQueue( data, newQueue || queue )
+			const volumeFade = state === PlayerState.STOPPED ? (data.fade?.in ?? fade) : fade
 
-		playMedia( { media, data: metadata, volume, fade: volumeFade, onError( error ) {
-			// alert( 'FIXME: i should be able to easly play next media.' )
-			onPlaybackError?.( error )
-			setState( PlayerState.PAUSED )
-		}, } )
+			const metadata = inheritDataFromQueue(data, newQueue || queue)
 
+			playMedia({
+				media,
+				data: metadata,
+				volume,
+				fade: volumeFade,
+				onError(error) {
+					// alert( 'FIXME: i should be able to easly play next media.' )
+					onPlaybackError?.(error)
+					setState(PlayerState.PAUSED)
+				},
+			})
 
-		if ( playingADifferentMedia ) {
-			onMediaChange?.( { data } )
-		}
+			if (playingADifferentMedia) {
+				onMediaChange?.({ data })
+			}
 
-		setState( PlayerState.PLAYING )
+			setState(PlayerState.PLAYING)
 
-		return data
-
-	}, [
-		media, queue, state, current, playPauseFadeDuration, volumeRef,
-		prevInQueue, nextInQueue, jumpTo, onMediaChange, onPlaybackError,
-	] )
-
+			return data
+		},
+		[
+			media,
+			queue,
+			state,
+			current,
+			playPauseFadeDuration,
+			volumeRef,
+			prevInQueue,
+			nextInQueue,
+			jumpTo,
+			onMediaChange,
+			onPlaybackError,
+		],
+	)
 
 	/**
 	 * Toggle play/pause media.
-	 * 
+	 *
 	 */
-	const togglePlayPause = useCallback<UtilityPlayPauseHandler<T>>( () => playPause(), [ playPause ] )
-	
-	
+	const togglePlayPause = useCallback<UtilityPlayPauseHandler<T>>(() => playPause(), [playPause])
+
 	/**
 	 * Stop media player.
-	 * 
+	 *
 	 */
-	const stop = useCallback<UtilityPlayPauseHandler<T>>( () => playPause( { stop: true } ), [ playPause ] )
-
+	const stop = useCallback<UtilityPlayPauseHandler<T>>(() => playPause({ stop: true }), [playPause])
 
 	/**
 	 * Play previous media.
-	 * 
+	 *
 	 */
-	const previous = useCallback<UtilityPlayPauseHandler<T>>( () => {
-		
-		if (
-			! media || ! restartThreshold ||
-			( media && media.currentTime <= ( restartThreshold / 1000 ) )
-		) {
-			return playPause( { previous: true } )
+	const previous = useCallback<UtilityPlayPauseHandler<T>>(() => {
+		if (!media || !restartThreshold || (media && media.currentTime <= restartThreshold / 1000)) {
+			return playPause({ previous: true })
 		}
 
 		// eslint-disable-next-line react-hooks/immutability
 		media.currentTime = 0
-		updatePositionState( media )
+		updatePositionState(media)
+	}, [media, restartThreshold, playPause])
 
-	}, [ media, restartThreshold, playPause ] )
-
-	
 	/**
 	 * Play next media.
-	 * 
+	 *
 	 */
-	const next = useCallback<UtilityPlayPauseHandler<T>>( () => playPause( { next: true } ), [ playPause ] )
-
+	const next = useCallback<UtilityPlayPauseHandler<T>>(() => playPause({ next: true }), [playPause])
 
 	/**
 	 * Handle native play/pause events on media.
-	 * 
+	 *
 	 * This events may be fired when using native media controls, Safari PiP controls...
 	 */
-	useEventListener( playPauseEvents, {
-		target		: media,
-		listener	: useCallback( event => {
-			setState( prev => {
-				if ( event.type === 'play' && prev !== PlayerState.PLAYING ) {
+	useEventListener(playPauseEvents, {
+		target: media,
+		listener: useCallback(event => {
+			setState(prev => {
+				if (event.type === 'play' && prev !== PlayerState.PLAYING) {
 					return PlayerState.PLAYING
 				}
-				if ( event.type === 'pause' && prev !== PlayerState.PAUSED ) {
+				if (event.type === 'pause' && prev !== PlayerState.PAUSED) {
 					return PlayerState.PAUSED
 				}
 				return prev
-			} )
-		}, [] )
-	} )
-
+			})
+		}, []),
+	})
 
 	/**
 	 * Handle fade-out volume when media is about to end.
 	 * Play next media in queue after fade-out completed.
-	 * 
+	 *
 	 */
-	useEventListener( 'timeupdate', {
-		target	: media,
-		listener: useCallback( () => {
+	useEventListener('timeupdate', {
+		target: media,
+		// eslint-disable-next-line react-hooks/immutability
+		listener: useCallback(() => {
+			if (!media) return
+			if (!current) return
 
-			if ( ! media ) return
-			if ( ! current ) return
+			const fadeDuration = current.fade?.out ?? playPauseFadeDuration ?? Tween.Duration
 
-			const fadeDuration = (
-				current.fade?.out ?? playPauseFadeDuration ?? Tween.Duration
-			)
+			const shouldFade =
+				Math.floor(media.currentTime) === Math.floor(media.duration - fadeDuration / 1000)
 
-			const shouldFade = (
-				Math.floor( media.currentTime ) === Math.floor( media.duration - ( fadeDuration / 1000 ) )
-			)
+			if (!shouldFade) return
 
-			if ( ! shouldFade ) return
-			
-			pauseMedia( { media, fade: fadeDuration, onEnd() {
+			pauseMedia({
+				media,
+				fade: fadeDuration,
+				onEnd() {
+					const volume = volumeRef?.current ?? 1
+					const data = nextInQueue()
 
-				const volume	= volumeRef?.current ?? 1
-				const data		= nextInQueue()
+					if (!hasNext || !data) {
+						return stop()
+					}
 
-				if ( ! hasNext || ! data ) {
-					return stop()
-				}
+					media.src = Url.format(data.src)
+					media.load()
 
-				media.src = Url.format( data.src )
-				media.load()
+					const metadata = inheritDataFromQueue(data, queue)
 
-				const metadata = inheritDataFromQueue( data, queue )
+					playMedia({
+						media,
+						data: metadata,
+						volume,
+						fade: data.fade?.in ?? playPauseFadeDuration,
+						onError(error) {
+							setState(PlayerState.PAUSED)
+							onPlaybackError?.(error)
+						},
+					})
 
-				playMedia( { media, data: metadata, volume, fade: data.fade?.in ?? playPauseFadeDuration, onError( error ) {
-					setState( PlayerState.PAUSED )
-					onPlaybackError?.( error )
-				}, } )
+					setState(PlayerState.PLAYING)
 
-				setState( PlayerState.PLAYING )
-
-				onMediaChange?.( { data } )
-
-			} } )
-
+					onMediaChange?.({ data })
+				},
+			})
 		}, [
-			current, media, queue, hasNext, playPauseFadeDuration, volumeRef,
-			nextInQueue, stop, onMediaChange, onPlaybackError,
-		] )
-	} )
-
+			current,
+			media,
+			queue,
+			hasNext,
+			playPauseFadeDuration,
+			volumeRef,
+			nextInQueue,
+			stop,
+			onMediaChange,
+			onPlaybackError,
+		]),
+	})
 
 	/**
 	 * Play next media when current media ends.
-	 * 
+	 *
 	 */
-	useEventListener( 'ended', {
-		target	: media,
-		listener: useCallback( () => {
-			if ( hasNext ) return next()
+	useEventListener('ended', {
+		target: media,
+		listener: useCallback(() => {
+			if (hasNext) return next()
 			stop()
-		}, [ hasNext, next, stop ] ),
-	} )
-
+		}, [hasNext, next, stop]),
+	})
 
 	/**
 	 * Load initial media.
-	 * 
+	 *
 	 */
-	useEffect( () => {
-
-		if ( ! media ) return
-		if ( ! initialMedia ) return
-		if ( initialLoadedRef.current ) return
+	// eslint-disable-next-line react-hooks/immutability
+	useEffect(() => {
+		if (!media) return
+		if (!initialMedia) return
+		if (initialLoadedRef.current) return
 
 		// eslint-disable-next-line react-hooks/immutability
-		media.src = Url.format( initialMedia.src )
+		media.src = Url.format(initialMedia.src)
 
-		if ( initialMedia?.time ) {
+		if (initialMedia?.time) {
 			media.currentTime = initialMedia.time
 		}
 
 		media.load()
 
 		initialLoadedRef.current = true
-
-	}, [ media, initialMedia ] )
-
+	}, [media, initialMedia])
 
 	return {
 		// defined by `useMediaPlayerController`
-		state, isPlaying, playPause, togglePlayPause, stop, previous, next,
+		state,
+		isPlaying,
+		playPause,
+		togglePlayPause,
+		stop,
+		previous,
+		next,
 		// defined by `useQueue`
-		current, currentId, queue, hasNext, jumpTo, ...queueController,
+		current,
+		currentId,
+		queue,
+		hasNext,
+		jumpTo,
+		...queueController,
 	}
-
 }

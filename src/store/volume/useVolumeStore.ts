@@ -1,17 +1,15 @@
+import { VolumeContext, type VolumeCtx } from '@/store/volume/VolumeContext'
 import { useContext } from 'react'
-import { VolumeContext } from '@/store/volume/VolumeContext'
 
-export const useVolumeStore = () => {
+export const useVolumeStore = (): VolumeCtx => {
+	const result = useContext(VolumeContext)
 
-	const result = useContext( VolumeContext )
-
-	if ( ! result ) {
+	if (!result) {
 		throw new Error(
 			'useVolumeStore has been called outside Volume Context Provider. ' +
-			'Please make sure to wrap your components with the Volume Component.'
+				'Please make sure to wrap your components with the Volume Component.',
 		)
 	}
 
 	return result
-	
 }
